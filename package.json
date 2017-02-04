@@ -1,0 +1,25 @@
+{
+  "name": "registry",
+  "version": "0.0.1",
+  "description": "codebase registry",
+  "main": "index.js",
+  "repository": {
+    "url": "https://github.com/sleexyz/registry",
+    "type": "git"
+  },
+  "author": "Sean Lee",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
+    "coffee-loader": "^0.7.2",
+    "coffee-script": "^1.12.2",
+    "express": "^4.14.0",
+    "mocha": "^3.2.0",
+    "mocha-loader": "^1.1.0",
+    "webpack": "2.2.0",
+    "webpack-dev-middleware": "^1.9.0",
+    "webpack-hot-middleware": "^2.15.0",
+    "webpack-node-externals": "^1.5.4"
+  }
+}
