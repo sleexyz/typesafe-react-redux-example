@@ -1,3 +1,3 @@
 # Registry
 
-Mantra: Treat your codebase as data
+Treat your codebase as data
