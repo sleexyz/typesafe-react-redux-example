@@ -1,0 +1,8 @@
+[ignore]
+
+[include]
+./0_code/src/**/*.js
+
+[libs]
+
+[options]
