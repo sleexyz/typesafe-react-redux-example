@@ -7,6 +7,10 @@ module.exports = {
      Meta-Framework
   */
 
+  portMap: {
+    '1_app': 8080,
+    '1_test_web': 8081,
+  },
   sourcePaths: {
     '0_code': path.resolve(__dirname, '0_code', 'src'),
   },

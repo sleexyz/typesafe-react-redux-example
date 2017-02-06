@@ -1,5 +1,5 @@
 node_modules
 flow-typed
 yarn.lock
+yarn-error.log
 **/gen/*
-
