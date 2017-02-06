@@ -4,5 +4,9 @@
   ],
   "plugins": [
     "transform-flow-strip-types",
+    "transform-object-rest-spread",
+    ["transform-react-jsx", {
+      "pragma": "React.createElement",
+    }],
   ],
 }
