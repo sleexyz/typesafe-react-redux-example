@@ -3,6 +3,11 @@
 import {createStore, combineReducers} from 'redux'
 /* import type {Reducer} from 'redux'*/
 
+// Supertype for all actions
+type Action = {
+  type: string,
+  payload: any
+}
 
 type Reducer<S, A> = (S, A) => S;
 type ReducerMiddleware<S, A> = (next: Reducer<S, *>) => Reducer<S, * | A>;
@@ -31,12 +36,24 @@ const handleNothing = (next) => (state, action) => {
   return next(state, action);
 }
 
-const reducerBuilder = ReducerBuilder
+const handleHello: Reducer<*,*> = (next) => (state, action) => {
+  if (action.type === 'hello') {
+    return "hello"
+  }
+  return next(state, action);
+}
+
+const reducer = ReducerBuilder
   .init()
-  .register(handleNothing)
+  .register(handleHello)
   .get();
 
-const Todos: Store<Object, Object> = createStore((s) => s, {
+(reducer("hello", {}));
+(reducer: Reducer<string, {type: 'hello', payload: any}>);
+(reducer("hello", {type: 'hello', payload: null}));
+(reducer("hello", {type: '', payload: null}));
+
+const Todos = createStore((s) => s, {
   todos: {
     '1': {
       value: 'write todomvc',
