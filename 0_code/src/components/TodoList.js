@@ -1,10 +1,13 @@
 // @flow
 import React, {createElement as e} from 'react';
 import TodoListEntry from './TodoListEntry.js';
-import store from '../store'
+import store from '../store';
+import TodoState from '../TodoState';
+
+const TodoStateActions = TodoState.actions;
 
 const addOnClick = () => {
-  console.log('Add');
+  store.dispatch(TodoStateActions.addTodo());
 };
 
 const TodoList = () => {

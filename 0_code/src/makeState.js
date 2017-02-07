@@ -8,36 +8,60 @@ import type {Reducer} from 'redux'
 
 // TODO: switch to a Class interface, and use this
 
+type ActionsType<S, O> = $ObjMap<O, <P>(v: P => S) => (payload: P, error: ?Error) => empty>;
+type ReducerType<S, O> = Reducer<S, {type: $Keys<O>}>;
+
 type OutputType<S, O> = {
-  actions: $ObjMap<O, <P>(v: (S, P) => S) => (payload: P, error: ?Error) => empty>,
-  reducer: Reducer<S, {type: $Keys<O>}>
+  actions: ActionsType<S, O>,
+  reducer: ReducerType<S, O>
 };
 
-const makeState = <S, O: *>(initialState: S, actionsObj: O): OutputType<S, O> => ({
-  actions: (() => {
-    const keys = Object.keys(actionsObj);
-    const ret = {};
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      ret[key] = (payload, error) => ({
+
+function makeActionsFromThing<S, O: *> (makeActionsObj: S => O): ActionsType<S, O> {
+  const keys = Object.keys((makeActionsObj: any)());
+  const actions = {};
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    actions[key] = (payload, error) => {
+      return {
         type: key,
         payload: payload,
         error: error
-      });
-    }
-    return ret;
-  })(),
-  reducer: (state = initialState, action) => {
+      };
+    };
+  }
+  return actions;
+}
+
+function makeReducerFromThing<S, O: *> (initialState: S, makeActionsObj: S => O): ReducerType<S, O> {
+  const actionsObj = {};
+  const keys = Object.keys((makeActionsObj: any)());
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    actionsObj[key] = (state, payload, error) => {
+      makeActionsObj(state)[key](payload, error);
+    };
+  }
+  const reducer = (state = initialState, {type, payload, error}) => {
     const keys = Object.keys(actionsObj);
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
-      if (key === action.type) {
-        return actionsObj[key](state, action);
-        // return actionsObj[key].call({state}, action);
+      if (key === type) {
+        return actionsObj[key](state, payload, error);
       }
     }
     return state;
   }
-});
+  return reducer;
+}
 
-export default makeState;
+function makeThing<S, O: *>(initialState: S, makeActionsObj: S => O): OutputType<S, O> {
+  const actions = makeActionsFromThing(makeActionsObj);
+  const output = {
+    actions: makeActionsFromThing(makeActionsObj),
+    reducer: makeReducerFromThing(initialState, makeActionsObj),
+  };
+  return output;
+}
+
+export default makeThing;

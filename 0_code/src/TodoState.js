@@ -9,13 +9,14 @@ const initialState = {
   ]
 };
 
-const actionsObj = {
-  addTodo(state, value: string) {
+const generateActions = (state) => ({
+  addTodo() {
+    console.log('adding todo...');
     return state;
   },
-  removeTodo(state, index: number) {
+  removeTodo(value: number) {
     return state;
   }
-}
+});
 
-export default makeState(initialState, actionsObj);
+export default makeState(initialState, generateActions);
