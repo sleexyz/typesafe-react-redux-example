@@ -9,7 +9,7 @@ import type {Reducer} from 'redux'
 // TODO: switch to a Class interface, and use this
 
 type ActionsType<S, O> = $ObjMap<O, <P>(v: P => S) => (payload: P, error: ?Error) => empty>;
-type ReducerType<S, O> = Reducer<S, {type: $Keys<O>}>;
+type ReducerType<S, O> = Reducer<S, {type: $Keys<O>, payload: ?any, error: ?any}>;
 
 type OutputType<S, O> = {
   actions: ActionsType<S, O>,
