@@ -1,17 +1,16 @@
 // @flow
 import {createStore, combineReducers} from 'redux'
-import makeState from './makeState.js'
+import {makeStoreDef} from '../StoreDef.js'
 
 const initialState = {
   todos: [
     {value: 'write todomvc'},
     {value: 'enjoy how meta this is'},
   ]
-};
+}
 
-const generateActions = (state) => ({
-  addTodo() {
-    console.log('adding todo...');
+const actionsDef = (state) => ({
+  addTodo(payload: typeof undefined) {
     return state;
   },
   removeTodo(value: number) {
@@ -19,4 +18,5 @@ const generateActions = (state) => ({
   }
 });
 
-export default makeState(initialState, generateActions);
+const {actions, reducer} = makeStoreDef(initialState, actionsDef);
+export {actions, reducer};

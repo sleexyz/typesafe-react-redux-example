@@ -16,8 +16,7 @@ type OutputType<S, O> = {
   reducer: ReducerType<S, O>
 };
 
-
-function makeActionsFromThing<S, O: *> (makeActionsObj: S => O): ActionsType<S, O> {
+const makeActionsFromStoreDef = <S, O: *> (makeActionsObj: S => O): ActionsType<S, O> => {
   const keys = Object.keys((makeActionsObj: any)());
   const actions = {};
   for (let i = 0; i < keys.length; i++) {
@@ -33,7 +32,7 @@ function makeActionsFromThing<S, O: *> (makeActionsObj: S => O): ActionsType<S, 
   return actions;
 }
 
-function makeReducerFromThing<S, O: *> (initialState: S, makeActionsObj: S => O): ReducerType<S, O> {
+const makeReducerFromStoreDef = <S, O: *> (initialState: S, makeActionsObj: S => O): ReducerType<S, O> => {
   const actionsObj = {};
   const keys = Object.keys((makeActionsObj: any)());
   for (let i = 0; i < keys.length; i++) {
@@ -55,13 +54,7 @@ function makeReducerFromThing<S, O: *> (initialState: S, makeActionsObj: S => O)
   return reducer;
 }
 
-function makeThing<S, O: *>(initialState: S, makeActionsObj: S => O): OutputType<S, O> {
-  const actions = makeActionsFromThing(makeActionsObj);
-  const output = {
-    actions: makeActionsFromThing(makeActionsObj),
-    reducer: makeReducerFromThing(initialState, makeActionsObj),
-  };
-  return output;
-}
-
-export default makeThing;
+export const makeStoreDef = <S, O: *>(initialState: S, makeActionsObj: S => O): OutputType<S, O> => ({
+  actions: makeActionsFromStoreDef(makeActionsObj),
+  reducer: makeReducerFromStoreDef(initialState, makeActionsObj),
+});

@@ -1,8 +1,8 @@
 // @flow
 import {createStore, combineReducers} from 'redux'
-import TodoState from './TodoState.js'
+import {reducer as TodoReducer} from './storeDefs/Todo.js'
 
-const Todos = createStore(TodoState.reducer);
+const Todos = createStore(TodoReducer);
 
 export default Todos;
 

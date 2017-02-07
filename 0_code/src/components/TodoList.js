@@ -2,12 +2,10 @@
 import React, {createElement as e} from 'react';
 import TodoListEntry from './TodoListEntry.js';
 import store from '../store';
-import TodoState from '../TodoState';
-
-const TodoStateActions = TodoState.actions;
+import {actions as TodoActions} from '../storeDefs/Todo.js';
 
 const addOnClick = () => {
-  store.dispatch(TodoStateActions.addTodo());
+  store.dispatch(TodoActions.addTodo());
 };
 
 const TodoList = () => {
