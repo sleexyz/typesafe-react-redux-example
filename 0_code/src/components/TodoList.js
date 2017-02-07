@@ -8,11 +8,10 @@ const addOnClick = () => {
 };
 
 const TodoList = () => {
-  console.log(store);
   return (
     <div>
       <h2>TodoList</h2>
-      {[].map((data, i) => <TodoListEntry {...data} key={i}/>)}
+      {store.getState().todos.map((data, i) => <TodoListEntry {...data} key={i}/>)}
       <button onClick={addOnClick}>Add</button>
     </div>
   );

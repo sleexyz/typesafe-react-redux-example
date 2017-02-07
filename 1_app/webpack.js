@@ -6,7 +6,6 @@ const {
   webpackLoaderRules,
 } = require('../build_utils');
 
-
 module.exports = {
   entry: [
     path.resolve(sourcePaths['0_code'], 'index.js'),

@@ -7,7 +7,6 @@ const path = require('path');
 const config = require('./webpack');
 const {portMap} = require('../build_utils.js');
 
-
 const port = portMap['1_app'];
 
 const compiler = webpack(config);

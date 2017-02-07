@@ -1,9 +1,7 @@
 // @flow
-
 import React, {createElement as e} from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App'
-
 
 const renderApp = () => {
   ReactDOM.render(
