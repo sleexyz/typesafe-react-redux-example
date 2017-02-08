@@ -1,3 +1,4 @@
+// @flow
 const path = require('path');
 const webpack = require('webpack');
 const {
@@ -8,7 +9,7 @@ const {
 
 module.exports = {
   entry: [
-    path.resolve(sourcePaths['0_code'], 'index.js'),
+    'mocha-loader!' + path.resolve(sourcePaths.frontend, 'spec.js'),
     'webpack-hot-middleware/client',
   ],
   externals: undefined,
@@ -18,8 +19,9 @@ module.exports = {
     ],
   },
   output: {
-    filename: path.join('gen', 'index.js'),
+    filename: 'index.js',
     path: path.resolve(__dirname, 'src'),
+    publicPath: '/gen/',
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

@@ -1,4 +1,5 @@
 [ignore]
+./**/gen
 
 [include]
 ./0_code/src/**/*.js

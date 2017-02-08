@@ -7,20 +7,19 @@ const path = require('path');
 const config = require('./webpack');
 const {portMap} = require('../build_utils.js');
 
-const port = portMap['1_app'];
+const port = portMap.dist_test_web;
 
 const compiler = webpack(config);
 
-const app = express()
-  .use(webpackDev(compiler, {
+const app = express();
+app.use(webpackDev(compiler, {
     publicPath: config.output.publicPath,
     stats: 'errors-only',
-  }))
-  .use(webpackHot(compiler))
-  .use('*', (req, res) => {
+}));
+app.use(webpackHot(compiler));
+app.use('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'src/index.html'));
-  });
-
+});
 app.listen(port, (err) => {
   if (err) {
     console.error(err);

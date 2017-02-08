@@ -1,3 +1,4 @@
+// @flow
 const path = require('path');
 const {
   sourcePaths,
@@ -5,10 +6,9 @@ const {
   webpackLoaderRules,
 } = require('../build_utils');
 
-
 module.exports = {
   entry: [
-    path.resolve(sourcePaths['0_code'], 'spec.js'),
+    path.resolve(sourcePaths.frontend, 'spec.js'),
   ],
   externals: webpackBaseConfig.externals,
   module: {
