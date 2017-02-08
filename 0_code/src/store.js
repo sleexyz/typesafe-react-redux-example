@@ -3,7 +3,12 @@ import {applyMiddleware, createStore, combineReducers} from 'redux';
 import createLogger from 'redux-logger';
 import {reducer as TodoReducer} from './storeDefs/Todo.js';
 
-const logger = createLogger();
+const logger = createLogger({
+  timestamp: false,
+  collapsed: true,
+  diff: true,
+});
+
 const Todos = createStore(
   TodoReducer,
   applyMiddleware(
