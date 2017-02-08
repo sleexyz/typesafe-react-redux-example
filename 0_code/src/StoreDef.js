@@ -2,13 +2,21 @@
 import type {Reducer} from 'redux'
 
 /*
-  Moral: Redux's reducers and reducer constants should be complete opaque.
-  Developers should never have to go to three places to write/update somethings.
+   StoreDefs are colocated definitions that subsume:
+
+   1) Redux store initial state
+   2) Redux store schema
+   3) Redux reducers
+   4) Redux actions
+   5) Redux action creators (synchronous)
+
+   Main idea:
+   Redux's reducers and reducer constants should be complete opaque.
+   Developers should never have to go to three places to write/update somethings.
 */
 
-// TODO: switch to a Class interface, and use this
-
 type ActionsType<S, O> = $ObjMap<O, <P>(v: P => S) => ((payload: P, error: ?Error) => Object)>;
+
 type ReducerType<S, O> = Reducer<S, {type: $Keys<O>, payload: ?any, error: ?any}>;
 
 type OutputType<S, O> = {
@@ -30,7 +38,7 @@ const makeActionsFromStoreDef = <S, O: {}> (makeActionsObj: S => O): ActionsType
     };
   }
   return actions;
-}
+};
 
 const makeReducerFromStoreDef = <S, O: {}> (initialState: S, makeActionsObj: S => O): ReducerType<S, O> => {
   const actionsObj = {};
@@ -50,7 +58,7 @@ const makeReducerFromStoreDef = <S, O: {}> (initialState: S, makeActionsObj: S =
     return state;
   }
   return reducer;
-}
+};
 
 export const makeStoreDef = <S, O: {}>(initialState: S, makeActionsObj: S => O): OutputType<S, O> => ({
   actions: makeActionsFromStoreDef(makeActionsObj),
