@@ -37,9 +37,7 @@ const makeReducerFromStoreDef = <S, O: *> (initialState: S, makeActionsObj: S =>
   const keys = Object.keys((makeActionsObj: any)());
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
-    actionsObj[key] = (state, payload, error) => {
-      makeActionsObj(state)[key](payload, error);
-    };
+    actionsObj[key] = (state, payload, error) => makeActionsObj(state)[key](payload, error);
   }
   const reducer = (state = initialState, {type, payload, error}) => {
     const keys = Object.keys(actionsObj);

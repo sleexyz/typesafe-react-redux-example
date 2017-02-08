@@ -1,8 +1,15 @@
 // @flow
-import {createStore, combineReducers} from 'redux'
-import {reducer as TodoReducer} from './storeDefs/Todo.js'
+import {applyMiddleware, createStore, combineReducers} from 'redux';
+import createLogger from 'redux-logger';
+import {reducer as TodoReducer} from './storeDefs/Todo.js';
 
-const Todos = createStore(TodoReducer);
+const logger = createLogger();
+const Todos = createStore(
+  TodoReducer,
+  applyMiddleware(
+    logger,
+  ),
+);
 
 export default Todos;
 

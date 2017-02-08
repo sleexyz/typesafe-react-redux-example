@@ -1,11 +1,15 @@
 // @flow
 import React, {createElement as e} from 'react';
 import ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
 import App from './components/App'
+import store from './store';
 
 const renderApp = () => {
   ReactDOM.render(
-    <App/>,
+    <Provider store={store}>
+      <App/>
+    </Provider>,
     document.getElementById('root'),
   );
 };

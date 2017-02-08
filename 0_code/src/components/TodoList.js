@@ -1,21 +1,20 @@
 // @flow
 import React, {createElement as e} from 'react';
+import {connect} from 'react-redux';
 import TodoListEntry from './TodoListEntry.js';
 import store from '../store';
 import {actions as TodoActions} from '../storeDefs/Todo.js';
 
 const addOnClick = () => {
-  store.dispatch(TodoActions.addTodo());
+  store.dispatch(TodoActions.createTodo());
 };
 
-const TodoList = () => {
-  return (
-    <div>
-      <h2>TodoList</h2>
-      {store.getState().todos.map((data, i) => <TodoListEntry {...data} key={i}/>)}
-      <button onClick={addOnClick}>Add</button>
-    </div>
-  );
-};
+const TodoList = ({todos}) =>
+  <div>
+    <h2>TodoList</h2>
+    <button onClick={addOnClick}>Add</button>
+    {todos.map((data, i) => <TodoListEntry {...data} index={i} key={data.id}/>)}
+  </div>
 
-export default TodoList;
+const mapStateToProps = ({todos}) => ({todos});
+export default connect(mapStateToProps)(TodoList);
