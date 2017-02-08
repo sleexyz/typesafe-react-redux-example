@@ -50,8 +50,9 @@ In this example project, we choose the convention of placing all generated code 
 ### StoreDefs
 
 StoreDefs are units of data that describe:
-1. How state is structured.
-2. The methods that modify those actions
+1. How state is structured
+2. How state is initialized
+3. The methods that modify those actions
 
 A `Map<String, StoreDef>` can be transformed into a single, auto-namespaced StoreDef. (TODO: implement and document)
 
