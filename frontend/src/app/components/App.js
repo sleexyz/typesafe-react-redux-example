@@ -1,6 +1,6 @@
 // @flow
 import React, {createElement as e} from 'react';
-import TodoList from './TodoList';
+import TodoList from 'app/components/TodoList.js';
 
 const App = () =>
   <div>

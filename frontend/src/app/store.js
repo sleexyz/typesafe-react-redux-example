@@ -1,7 +1,7 @@
 // @flow
 import {applyMiddleware, createStore, combineReducers} from 'redux';
 import createLogger from 'redux-logger';
-import {reducer as TodoReducer} from './storeDefs/Todo.js';
+import {reducer as TodoReducer} from 'app/store_defs/Todo.js';
 
 const logger = createLogger({
   timestamp: false,

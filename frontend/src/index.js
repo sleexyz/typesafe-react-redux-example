@@ -2,8 +2,8 @@
 import React, {createElement as e} from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
-import App from './components/App'
-import store from './store';
+import App from 'app/components/App.js'
+import store from 'app/store.js';
 
 const renderApp = () => {
   ReactDOM.render(

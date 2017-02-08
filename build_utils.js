@@ -25,8 +25,8 @@ module.exports = {
     resolve: {
       extensions: ['.js', '.json', '.coffee'],
       modules: [
+        path.resolve(__dirname, 'frontend', 'src'),
         'node_modules',
-        path.resolve(__dirname, 'src'),
       ],
     },
     externals: [nodeExternals()],
