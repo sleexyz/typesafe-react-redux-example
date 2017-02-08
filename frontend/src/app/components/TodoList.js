@@ -1,9 +1,9 @@
 // @flow
 import React, {createElement as e} from 'react';
 import {connect} from 'react-redux';
-import TodoListEntry from './TodoListEntry.js';
-import store from '../store';
-import {actions as TodoActions} from '../storeDefs/Todo.js';
+import store from 'app/store.js';
+import {actions as TodoActions} from 'app/store_defs/Todo.js';
+import TodoListEntry from 'app/components/TodoListEntry.js';
 
 const addOnClick = () => {
   store.dispatch(TodoActions.createTodo());

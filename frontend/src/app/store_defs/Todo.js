@@ -1,6 +1,6 @@
 // @flow
 import {createStore, combineReducers} from 'redux';
-import {makeStoreDef} from '../StoreDef.js';
+import {makeStoreDef} from 'store-def';
 
 const initialState = {
   nextId: 1,
