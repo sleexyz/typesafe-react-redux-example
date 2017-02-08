@@ -1,20 +1,6 @@
 // @flow
 import type {Reducer} from 'redux'
 
-/*
-   StoreDefs are colocated definitions that subsume:
-
-   1) Redux store initial state
-   2) Redux store schema
-   3) Redux reducers
-   4) Redux actions
-   5) Redux action creators (synchronous)
-
-   Main idea:
-   Redux's reducers and reducer constants should be complete opaque.
-   Developers should never have to go to three places to write/update somethings.
-*/
-
 type ActionsType<S, O> = $ObjMap<O, <P>(v: P => S) => ((payload: P, error: ?Error) => Object)>;
 
 type ReducerType<S, O> = Reducer<S, {type: $Keys<O>, payload: ?any, error: ?any}>;
