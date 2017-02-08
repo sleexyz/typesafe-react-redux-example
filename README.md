@@ -2,19 +2,15 @@
 
 ## Key Concepts
 
-### Staged Compilation
+### Embrace Staged Compilation
 
 At its heart, [Webpack](https://webpack.js.org/) is a build tool that takes in *code* and returns *code*.
 
-In general we can have multiple compilation steps that take *code* and return *code*. A prototypical example of this is when the backend generates a computer-parseable API specification.
+In general we can have multiple compilation steps that *code* and return *code*. A prototypical example of this is when some backend script generates a computer-parseable API specification. If we wanted to, we could theoretically generate client-side service code from this specification. (TODO: implement)
 
-We can model these compilation steps as a graph. For example, this example project has multiple webpack outputs:
+We can model these compilation steps as a graph. For example, this example project has multiple webpack outputs, modelled by the following diagram:
 
 ```
-              ...
-
-               |
-               V
 
             frontend
 
@@ -50,13 +46,15 @@ In this example project, we choose the convention of placing all generated code 
 ### StoreDefs
 
 StoreDefs are units of data that describe:
-1. How state is structured
-2. How state is initialized
-3. The methods that modify those actions
 
-A `Map<String, StoreDef>` can be transformed into a single, auto-namespaced StoreDef. (TODO: implement and document)
+1. how state is structured
+2. how state is initialized
+3. the methods that modify those actions
 
-For those familiar with Redux, a StoreDef subsumes:
+An object with StoreDef values can be transformed into a single, auto-namespaced StoreDef. (TODO: implement and document)
+
+For those familiar with Redux, a StoreDef is a unit of data that subsumes:
+
 1. your Redux Store type
 2. your Redux Store initial state
 3. your Redux Reducers
