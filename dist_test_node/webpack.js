@@ -16,7 +16,6 @@ module.exports = {
       webpackLoaderRules.js,
     ],
   },
-  node: undefined,
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'src', 'gen'),
