@@ -42,7 +42,8 @@
     "webpack-node-externals": "^1.5.4"
   },
   "scripts": {
-    "test": "yarn run lint && flow",
+    "test": "yarn run lint && flow && yarn run test-node",
+    "test-node": "./dist_test_node/build.js && mocha dist_test_node/src/gen/index.js",
     "lint": "eslint ."
   }
 }
