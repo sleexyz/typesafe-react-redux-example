@@ -1,6 +1,7 @@
 // @flow
 /* eslint-env mocha */
 /* eslint no-unused-expressions: 0, no-unused-vars: 0 */
+import { assert } from 'chai';
 import { createStore } from 'redux';
 import { makeStoreDef } from './';
 
@@ -91,3 +92,47 @@ import { makeStoreDef } from './';
   // $ExpectError
   store.dispatch(actions.exampleAction2('hello'));
 };
+
+describe('makeStoreDef', () => {
+  it('works for identity actions', () => {
+    const initialState = 'hello';
+    const actionsObj = (state: typeof initialState) => ({
+      exampleAction(v: void) {
+        return state;
+      },
+    });
+    const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+    const store = createStore(reducer);
+    store.dispatch(actions.exampleAction());
+    assert.equal(initialState, store.getState());
+  });
+  it('works for actions that modify the state', () => {
+    const initialState = 'hello';
+    const actionsObj = (state: typeof initialState) => ({
+      exampleAction(v: void) {
+        return state + state;
+      },
+    });
+    const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+    const store = createStore(reducer);
+    store.dispatch(actions.exampleAction());
+    assert.equal('hellohello', store.getState());
+  });
+  it('works for multiple actions that modify the state', () => {
+    const initialState = 'hello';
+    const actionsObj = (state: typeof initialState) => ({
+      exampleAction(v: void) {
+        return 'world';
+      },
+      exampleAction2(v: string) {
+        return v;
+      },
+    });
+    const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+    const store = createStore(reducer);
+    store.dispatch(actions.exampleAction());
+    assert.equal('world', store.getState());
+    store.dispatch(actions.exampleAction2('asdf'));
+    assert.equal('asdf', store.getState());
+  });
+});
