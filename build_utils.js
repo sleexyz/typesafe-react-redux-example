@@ -9,12 +9,12 @@ module.exports = {
   */
 
   portMap: {
-    'dist_app': 8080,
-    'dist_test_web': 8081,
+    dist_app: 8080,
+    dist_test_web: 8081,
   },
 
   sourcePaths: {
-    'frontend': path.resolve(__dirname, 'frontend', 'src'),
+    frontend: path.resolve(__dirname, 'frontend', 'src'),
   },
 
   /*
@@ -37,9 +37,9 @@ module.exports = {
       exclude: /(node_modules|bower_components)/,
       test: /\.js$/,
       use: [
-        {loader: 'babel-loader'},
+        { loader: 'babel-loader' },
       ],
-    }
+    },
   },
 
 };

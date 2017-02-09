@@ -1,21 +1,20 @@
 // @flow
-import {createStore, combineReducers} from 'redux';
-import {makeStoreDef} from 'store-def';
+import { makeStoreDef } from 'store-def';
 
 const initialState = {
   nextId: 1,
   todos: [
-    {value: 'write todomvc', id: 0},
+    { value: 'write todomvc', id: 0 },
   ],
 };
 
 const actionsDef = (state: typeof initialState) => ({
-  createTodo(v: void) {
+  createTodo() {
     return {
       nextId: state.nextId + 1,
       todos: [
         ...state.todos,
-        {value: '', id: state.nextId},
+        { value: '', id: state.nextId },
       ],
     };
   },
@@ -27,16 +26,16 @@ const actionsDef = (state: typeof initialState) => ({
       todos: newTodos,
     };
   },
-  updateTodo({index, value}: {index: number, value: string}) {
+  updateTodo({ index, value }: { index: number, value: string }) {
     const newTodos = [...state.todos];
     const oldTodo = state.todos[index];
-    newTodos.splice(index, 1, {...oldTodo, value});
+    newTodos.splice(index, 1, { ...oldTodo, value });
     return {
       ...state,
       todos: newTodos,
     };
-  }
+  },
 });
 
-const {actions, reducer} = makeStoreDef(initialState, actionsDef);
-export {actions, reducer};
+const { actions, reducer } = makeStoreDef(initialState, actionsDef);
+export { actions, reducer };

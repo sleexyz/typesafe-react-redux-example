@@ -1,18 +1,19 @@
 // @flow
-import {assert} from 'chai';
-import {makeStoreDef} from  './';
-import {createStore} from 'redux';
+/* eslint-env mocha */
+/* eslint no-unused-expressions: 0, no-unused-vars: 0 */
+import { createStore } from 'redux';
+import { makeStoreDef } from './';
 
 // makeStoreDef unifies action state with inital state, for simple types
 () => {
-  const initialState = "hello";
+  const initialState = 'hello';
   const actionsObj = (state: typeof initialState) => ({
     exampleAction() {
       (state: string);
       // $ExpectError
       (state: number);
       return state;
-    }
+    },
   });
   makeStoreDef(initialState, actionsObj);
 };
@@ -22,7 +23,7 @@ import {createStore} from 'redux';
   const initialState = {
     counter: 1,
     todos: [
-      {value: "do something..."},
+      { value: 'do something...' },
     ],
   };
   const actionsObj = (state: typeof initialState) => ({
@@ -34,21 +35,24 @@ import {createStore} from 'redux';
       // $ExpectError
       (state: string);
       return state;
-    }
+    },
   });
   makeStoreDef(initialState, actionsObj);
 };
 
 // makeStoreDef expects state to be returned in an action
 () => {
-  const initialState = "hello";
+  const initialState = 'hello';
   const actionsObj = (state: typeof initialState) => ({
     // $ExpectError
-    exampleAction1() {
+    exampleAction1(v: void) {
     },
     exampleAction2() {
       // $ExpectError
       return 1;
+    },
+    exampleAction3() {
+      return state;
     },
   });
   makeStoreDef(initialState, actionsObj);
@@ -56,13 +60,13 @@ import {createStore} from 'redux';
 
 // makeStoreDef forbids nonexistent actions from being called
 () => {
-  const initialState = "hello";
+  const initialState = 'hello';
   const actionsObj = (state: typeof initialState) => ({
     exampleAction() {
       return state;
     },
   });
-  const {actions, reducer} = makeStoreDef(initialState, actionsObj);
+  const { actions, reducer } = makeStoreDef(initialState, actionsObj);
   const store = createStore(reducer);
   // $ExpectError
   store.dispatch(actions.exampleAccction());
@@ -70,7 +74,7 @@ import {createStore} from 'redux';
 
 // makeStoreDef forbids improper action usage
 () => {
-  const initialState = "hello";
+  const initialState = 'hello';
   const actionsObj = (state: typeof initialState) => ({
     exampleAction(v: void) {
       return state;
@@ -79,7 +83,7 @@ import {createStore} from 'redux';
       return state;
     },
   });
-  const {actions, reducer} = makeStoreDef(initialState, actionsObj);
+  const { actions, reducer } = makeStoreDef(initialState, actionsObj);
   const store = createStore(reducer);
   // $ExpectError
   store.dispatch(actions.exampleAction(1));
