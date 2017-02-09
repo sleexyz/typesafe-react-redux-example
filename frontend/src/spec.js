@@ -1,2 +1,4 @@
 const context = require.context('./', true, /_spec.js/);
-context.keys().forEach(key => context(key));
+context.keys().forEach((key) => {
+  context(key);
+});

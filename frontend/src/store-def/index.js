@@ -1,17 +1,25 @@
 // @flow
 import type {Reducer} from 'redux'
 
-type ActionsType<S, O> = $ObjMap<O, <P>(v: P => S) => ((payload: P, error: ?Error) => Object)>;
+type Action<P, O> = {type: $Keys<O>, payload: ?P, error: ?Error}
 
-type ReducerType<S, O> = Reducer<S, {type: $Keys<O>, payload: ?any, error: ?any}>;
+type UnaryActionCreator<P, O> = (payload: P, error?: Error) => Action<P, O>
+
+type ActionsType<S, O> = $ObjMap<O, <P>(v: (S, P) => S) => UnaryActionCreator<P, O>>
+
+type ReducerObj<S> = {
+  [key: string]: (S, any) => S
+}
+
+type ReducerType<S, O> = Reducer<S, {type: $Keys<O>, payload: ?any, error: ?Error}>;
 
 type OutputType<S, O> = {
   actions: ActionsType<S, O>,
-  reducer: ReducerType<S, O>
+  reducer: ReducerType<S, O>,
 };
 
-const makeActionsFromStoreDef = <S, O: {}> (makeActionsObj: S => O): ActionsType<S, O> => {
-  const keys = Object.keys((makeActionsObj: any)());
+const makeActionsFromStoreDef = <S, O: ReducerObj<S>> (reducerObj: O): ActionsType<S, O> => {
+  const keys = Object.keys(reducerObj);
   const actions = {};
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
@@ -26,19 +34,13 @@ const makeActionsFromStoreDef = <S, O: {}> (makeActionsObj: S => O): ActionsType
   return actions;
 };
 
-const makeReducerFromStoreDef = <S, O: {}> (initialState: S, makeActionsObj: S => O): ReducerType<S, O> => {
-  const actionsObj = {};
-  const keys = Object.keys((makeActionsObj: any)());
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
-    actionsObj[key] = (state, payload, error) => makeActionsObj(state)[key](payload, error);
-  }
+const makeReducerFromStoreDef = <S, O: ReducerObj<S>> (initialState: S, reducerObj: O): ReducerType<S, O> => {
   const reducer = (state = initialState, {type, payload, error}) => {
-    const keys = Object.keys(actionsObj);
+    const keys = Object.keys(reducerObj);
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
       if (key === type) {
-        return actionsObj[key](state, payload, error);
+        return reducerObj[key](state, payload, error);
       }
     }
     return state;
@@ -46,7 +48,7 @@ const makeReducerFromStoreDef = <S, O: {}> (initialState: S, makeActionsObj: S =
   return reducer;
 };
 
-export const makeStoreDef = <S, O: {}>(initialState: S, makeActionsObj: S => O): OutputType<S, O> => ({
-  actions: makeActionsFromStoreDef(makeActionsObj),
-  reducer: makeReducerFromStoreDef(initialState, makeActionsObj),
+export const makeStoreDef = <S, O: ReducerObj<S>>(initialState: S, reducerObj: O): OutputType<S, O> => ({
+  actions: makeActionsFromStoreDef(reducerObj),
+  reducer: makeReducerFromStoreDef(initialState, reducerObj),
 });

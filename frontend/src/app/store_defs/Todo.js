@@ -9,8 +9,8 @@ const initialState = {
   ],
 };
 
-const actionsDef = (state) => ({
-  createTodo(payload: typeof undefined) {
+const reducerMap = {
+  createTodo(state) {
     return {
       nextId: state.nextId + 1,
       todos: [
@@ -19,7 +19,7 @@ const actionsDef = (state) => ({
       ],
     };
   },
-  removeTodo(index: number) {
+  removeTodo(state, index: number) {
     const newTodos = [...state.todos];
     newTodos.splice(index, 1);
     return {
@@ -27,7 +27,7 @@ const actionsDef = (state) => ({
       todos: newTodos,
     };
   },
-  updateTodo({index, value}: {index: number, value: string}) {
+  updateTodo(state, {index, value}: {index: number, value: string}) {
     const newTodos = [...state.todos];
     const oldTodo = state.todos[index];
     newTodos.splice(index, 1, {...oldTodo, value});
@@ -36,7 +36,7 @@ const actionsDef = (state) => ({
       todos: newTodos,
     };
   }
-});
+};
 
-const {actions, reducer} = makeStoreDef(initialState, actionsDef);
+const {actions, reducer} = makeStoreDef(initialState, reducerMap);
 export {actions, reducer};

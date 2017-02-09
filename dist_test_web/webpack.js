@@ -18,6 +18,10 @@ module.exports = {
       webpackLoaderRules.js,
     ],
   },
+  node: {
+    fs: "empty",
+    child_process: "empty",
+  },
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'src'),
