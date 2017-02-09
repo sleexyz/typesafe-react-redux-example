@@ -9,8 +9,8 @@ const initialState = {
   ],
 };
 
-const actionsDef = (state) => ({
-  createTodo(payload: typeof undefined) {
+const actionsDef = (state: typeof initialState) => ({
+  createTodo(v: void) {
     return {
       nextId: state.nextId + 1,
       todos: [
