@@ -1,7 +1,7 @@
 // @flow
-import {applyMiddleware, createStore, combineReducers} from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import createLogger from 'redux-logger';
-import {reducer as TodoReducer} from 'app/store_defs/Todo.js';
+import { reducer as TodoReducer } from 'app/store_defs/Todo';
 
 const logger = createLogger({
   timestamp: false,
@@ -19,5 +19,6 @@ const Todos = createStore(
 export default Todos;
 
 if (module.hot) {
+  // eslint-disable-next-line flowtype/no-weak-types
   (module.hot: any).accept();
 }

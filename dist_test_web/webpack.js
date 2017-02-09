@@ -9,7 +9,7 @@ const {
 
 module.exports = {
   entry: [
-    'mocha-loader!' + path.resolve(sourcePaths.frontend, 'spec.js'),
+    `mocha-loader!${path.resolve(sourcePaths.frontend, 'spec.js')}`,
     'webpack-hot-middleware/client',
   ],
   externals: undefined,

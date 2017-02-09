@@ -1,0 +1,28 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+  },
+  "extends": [
+    "plugin:flowtype/recommended",
+    "airbnb"
+  ],
+  "parser": "babel-eslint",
+  "plugins": [
+    "flowtype"
+  ],
+  "rules": {
+    "arrow-parens": 0,
+    "flowtype/no-weak-types": 2,
+    "import/no-extraneous-dependencies": 0,
+    "import/prefer-default-export": 0,
+    "react/jsx-filename-extension": [0, { "extensions": [".js"] }],
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./dist_app/webpack.js"
+      }
+    }
+  }
+}
