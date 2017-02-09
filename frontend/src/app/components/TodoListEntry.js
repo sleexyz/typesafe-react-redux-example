@@ -1,8 +1,7 @@
 // @flow
 import React from 'react';
 import store from 'app/store.js';
-// import {actions as TodoActions} from 'app/store_defs/Todo.js';
-import {actions as TodoActions} from '../store_defs/Todo.js';
+import {actions as TodoActions} from 'app/store_defs/Todo.js';
 
 type Props = {
   value: string,
