@@ -1,5 +1,4 @@
 // @flow
-/* eslint-env mocha */
 /* eslint no-unused-expressions: 0, no-unused-vars: 0 */
 import { assert } from 'chai';
 import { createStore } from 'redux';
