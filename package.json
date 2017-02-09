@@ -24,22 +24,22 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.9.0",
-    "express": "^4.14.0",
     "flow-bin": "^0.38.0",
     "mocha": "^3.2.0",
-    "mocha-loader": "^1.1.0",
-    "webpack": "2.2.0",
-    "webpack-dev-middleware": "^1.9.0",
-    "webpack-hot-middleware": "^2.15.0",
-    "webpack-node-externals": "^1.5.4"
+    "mocha-loader": "^1.1.0"
   },
   "dependencies": {
     "chai": "^3.5.0",
+    "express": "^4.14.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
     "redux": "^3.6.0",
-    "redux-logger": "^2.8.1"
+    "redux-logger": "^2.8.1",
+    "webpack": "2.2.0",
+    "webpack-dev-middleware": "^1.9.0",
+    "webpack-hot-middleware": "^2.15.0",
+    "webpack-node-externals": "^1.5.4"
   },
   "scripts": {
     "test": "yarn run lint && flow",
