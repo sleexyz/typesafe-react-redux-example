@@ -14,7 +14,6 @@ type ActionsObj<S, O> = O & _ActionsObj<S>;
 
 type Action<P, O> = { type: $Keys<O>, payload?: P, error?: Error };
 
-
 type ActionsType<S, O> = $ObjMap<O, <P>(v: P => S) => (payload?: P, error?: Error) => Action<P, O>>;
 
 // eslint-disable-next-line flowtype/no-weak-types
