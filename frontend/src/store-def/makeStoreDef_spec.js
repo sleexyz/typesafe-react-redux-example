@@ -4,7 +4,11 @@ import { assert } from 'chai';
 import { createStore } from 'redux';
 import { makeStoreDef } from './';
 
-// makeStoreDef unifies action state with inital state, for simple types
+/*
+   Flowtype tests
+*/
+
+// makeStoreDef's action state is consistent with inital state, for simple types
 () => {
   const initialState = 'hello';
   const actionsObj = (state: typeof initialState) => ({
@@ -18,7 +22,7 @@ import { makeStoreDef } from './';
   makeStoreDef(initialState, actionsObj);
 };
 
-// makeStoreDef unifies action state with initial state, for complex object types
+// makeStoreDef's action state is consistent initial state, for complex object types
 () => {
   const initialState = {
     counter: 1,
@@ -92,6 +96,28 @@ import { makeStoreDef } from './';
   store.dispatch(actions.exampleAction2('hello'));
 };
 
+// Redux's store.getState enforces the right shape
+() => {
+  const initialState = 'hello';
+  const actionsObj = (state: typeof initialState) => ({
+    exampleAction(v: void) {
+      return state;
+    },
+    exampleAction2(v: number) {
+      return state;
+    },
+  });
+  const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+  const store = createStore(reducer);
+  (store.getState(): string);
+  // $ExpectError
+  (store.getState(): number);
+};
+
+/*
+   Runtime tests
+*/
+
 describe('makeStoreDef', () => {
   it('works for identity actions', () => {
     const initialState = 'hello';
@@ -105,6 +131,7 @@ describe('makeStoreDef', () => {
     store.dispatch(actions.exampleAction());
     assert.equal(initialState, store.getState());
   });
+
   it('works for actions that modify the state', () => {
     const initialState = 'hello';
     const actionsObj = (state: typeof initialState) => ({
@@ -117,6 +144,7 @@ describe('makeStoreDef', () => {
     store.dispatch(actions.exampleAction());
     assert.equal('hellohello', store.getState());
   });
+
   it('works for multiple actions that modify the state', () => {
     const initialState = 'hello';
     const actionsObj = (state: typeof initialState) => ({

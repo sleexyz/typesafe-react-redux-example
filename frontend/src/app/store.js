@@ -1,7 +1,7 @@
 // @flow
 import { applyMiddleware, createStore } from 'redux';
 import createLogger from 'redux-logger';
-import { reducer as TodoReducer } from 'app/store_defs/Todo';
+import { reducer } from 'app/store_defs';
 
 const logger = createLogger({
   timestamp: false,
@@ -10,7 +10,7 @@ const logger = createLogger({
 });
 
 const Todos = createStore(
-  TodoReducer,
+  reducer,
   applyMiddleware(
     logger,
   ),

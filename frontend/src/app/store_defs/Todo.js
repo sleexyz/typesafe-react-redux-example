@@ -37,5 +37,4 @@ const actionsDef = (state: typeof initialState) => ({
   },
 });
 
-const { actions, reducer } = makeStoreDef(initialState, actionsDef);
-export { actions, reducer };
+export default makeStoreDef(initialState, actionsDef);
