@@ -2,13 +2,13 @@
 /* eslint no-unused-expressions: 0, no-unused-vars: 0 */
 import { assert } from 'chai';
 import { createStore } from 'redux';
-import { makeStoreDef } from './';
+import { makeStateDef } from './';
 
 /*
    Flowtype tests
 */
 
-// makeStoreDef's action state is consistent with inital state, for simple types
+// makeStateDef's action state is consistent with inital state, for simple types
 () => {
   const initialState = 'hello';
   const makeStateFunctions = (state: typeof initialState) => ({
@@ -19,10 +19,10 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  makeStoreDef(initialState, makeStateFunctions);
+  makeStateDef(initialState, makeStateFunctions);
 };
 
-// makeStoreDef's action state is consistent initial state, for complex object types
+// makeStateDef's action state is consistent initial state, for complex object types
 () => {
   const initialState = {
     counter: 1,
@@ -41,10 +41,10 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  makeStoreDef(initialState, makeStateFunctions);
+  makeStateDef(initialState, makeStateFunctions);
 };
 
-// makeStoreDef expects state to be returned in an action
+// makeStateDef expects state to be returned in an action
 () => {
   const initialState = 'hello';
   const makeStateFunctions = (state: typeof initialState) => ({
@@ -59,10 +59,10 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  makeStoreDef(initialState, makeStateFunctions);
+  makeStateDef(initialState, makeStateFunctions);
 };
 
-// makeStoreDef forbids nonexistent actions from being called
+// makeStateDef forbids nonexistent actions from being called
 () => {
   const initialState = 'hello';
   const makeStateFunctions = (state: typeof initialState) => ({
@@ -70,13 +70,13 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
+  const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
   const store = createStore(reducer);
   // $ExpectError
   store.dispatch(actions.exampleAccction());
 };
 
-// makeStoreDef forbids improper action usage
+// makeStateDef forbids improper action usage
 () => {
   const initialState = 'hello';
   const makeStateFunctions = (state: typeof initialState) => ({
@@ -87,7 +87,7 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
+  const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
   const store = createStore(reducer);
   // $ExpectError
   store.dispatch(actions.exampleAction(1));
@@ -107,7 +107,7 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
+  const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
   const store = createStore(reducer);
   (store.getState(): string);
   // $ExpectError
@@ -118,7 +118,7 @@ import { makeStoreDef } from './';
    Runtime tests
 */
 
-describe('makeStoreDef', () => {
+describe('makeStateDef', () => {
   it('works for identity actions', () => {
     const initialState = 'hello';
     const makeStateFunctions = (state: typeof initialState) => ({
@@ -126,7 +126,7 @@ describe('makeStoreDef', () => {
         return state;
       },
     });
-    const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
+    const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal(initialState, store.getState());
@@ -139,7 +139,7 @@ describe('makeStoreDef', () => {
         return state + state;
       },
     });
-    const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
+    const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal('hellohello', store.getState());
@@ -155,7 +155,7 @@ describe('makeStoreDef', () => {
         return v;
       },
     });
-    const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
+    const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal('world', store.getState());

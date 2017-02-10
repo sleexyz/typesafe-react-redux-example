@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import store from 'app/store';
-import { actions as Actions } from 'app/store_defs';
+import { actions as Actions } from 'app/state';
 
 type Props = {
   value: string,

@@ -1,8 +1,8 @@
 // @flow
-import combineStoreDefs from './combineStoreDefs';
-import makeStoreDef from './makeStoreDef';
+import combineStateDefs from './combineStateDefs';
+import makeStateDef from './makeStateDef';
 
 export {
-  combineStoreDefs,
-  makeStoreDef,
+  combineStateDefs,
+  makeStateDef,
 };

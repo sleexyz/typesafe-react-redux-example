@@ -1,5 +1,5 @@
 // @flow
-import { makeStoreDef } from 'store-def';
+import { makeStateDef } from 'state-def';
 
 const initialState = {
   nextId: 1,
@@ -37,4 +37,4 @@ const makeStateFunctions = (state: typeof initialState) => ({
   },
 });
 
-export default makeStoreDef(initialState, makeStateFunctions);
+export default makeStateDef(initialState, makeStateFunctions);

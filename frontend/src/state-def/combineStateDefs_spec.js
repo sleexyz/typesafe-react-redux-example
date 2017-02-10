@@ -2,7 +2,7 @@
 /* eslint no-unused-expressions: 0, no-unused-vars: 0 */
 import { assert } from 'chai';
 import { createStore } from 'redux';
-import { combineStoreDefs, makeStoreDef } from './';
+import { combineStateDefs, makeStateDef } from './';
 
 /*
    Flowtype tests
@@ -10,17 +10,17 @@ import { combineStoreDefs, makeStoreDef } from './';
 
 // Namespaced actions must enforce existence statically
 () => {
-  const FooStoreDef = makeStoreDef('hello', (state: string) => ({
+  const FooStateDef = makeStateDef('hello', (state: string) => ({
     hello() { return state + state; },
   }));
-  const BarStoreDef = makeStoreDef(1, (state: number) => ({
+  const BarStateDef = makeStateDef(1, (state: number) => ({
     world() { return state + 2; },
   }));
-  const combinedStoreDef = combineStoreDefs({
-    foo: FooStoreDef,
-    bar: BarStoreDef,
+  const combinedStateDef = combineStateDefs({
+    foo: FooStateDef,
+    bar: BarStateDef,
   });
-  const { reducer, actions } = combinedStoreDef;
+  const { reducer, actions } = combinedStateDef;
   const store = createStore(reducer);
   store.dispatch(actions.foo.hello());
   // $ExpectError
@@ -31,17 +31,17 @@ import { combineStoreDefs, makeStoreDef } from './';
 
 // Namespaced actions must enforce proper usage statically
 () => {
-  const FooStoreDef = makeStoreDef('hello', (state: string) => ({
+  const FooStateDef = makeStateDef('hello', (state: string) => ({
     hello(x: number) { return x.toString() + state; },
   }));
-  const BarStoreDef = makeStoreDef(1, (state: number) => ({
+  const BarStateDef = makeStateDef(1, (state: number) => ({
     world() { return state + 2; },
   }));
-  const combinedStoreDef = combineStoreDefs({
-    foo: FooStoreDef,
-    bar: BarStoreDef,
+  const combinedStateDef = combineStateDefs({
+    foo: FooStateDef,
+    bar: BarStateDef,
   });
-  const { reducer, actions } = combinedStoreDef;
+  const { reducer, actions } = combinedStateDef;
   const store = createStore(reducer);
   store.dispatch(actions.foo.hello(1));
   // $ExpectError
@@ -50,17 +50,17 @@ import { combineStoreDefs, makeStoreDef } from './';
 
 // Namespaced actions must enforce proper usage statically, even with potential clashing
 () => {
-  const FooStoreDef = makeStoreDef('hello', (state: string) => ({
+  const FooStateDef = makeStateDef('hello', (state: string) => ({
     hello(x: number) { return x.toString() + state; },
   }));
-  const BarStoreDef = makeStoreDef(1, (state: number) => ({
+  const BarStateDef = makeStateDef(1, (state: number) => ({
     hello(x: string) { return state + x.length; },
   }));
-  const combinedStoreDef = combineStoreDefs({
-    foo: FooStoreDef,
-    bar: BarStoreDef,
+  const combinedStateDef = combineStateDefs({
+    foo: FooStateDef,
+    bar: BarStateDef,
   });
-  const { reducer, actions } = combinedStoreDef;
+  const { reducer, actions } = combinedStateDef;
   const store = createStore(reducer);
   store.dispatch(actions.foo.hello(1));
   // $ExpectError
@@ -72,17 +72,17 @@ import { combineStoreDefs, makeStoreDef } from './';
 
 // Redux's store.getState enforces the right shape
 () => {
-  const FooStoreDef = makeStoreDef('hello', (state: string) => ({
+  const FooStateDef = makeStateDef('hello', (state: string) => ({
     hello(x: number) { return x.toString() + state; },
   }));
-  const BarStoreDef = makeStoreDef(1, (state: number) => ({
+  const BarStateDef = makeStateDef(1, (state: number) => ({
     hello(x: string) { return state + x.length; },
   }));
-  const combinedStoreDef = combineStoreDefs({
-    foo: FooStoreDef,
-    bar: BarStoreDef,
+  const combinedStateDef = combineStateDefs({
+    foo: FooStateDef,
+    bar: BarStateDef,
   });
-  const { reducer, actions } = combinedStoreDef;
+  const { reducer, actions } = combinedStateDef;
   const store = createStore(reducer);
   (store.getState().foo: string);
   // $ExpectError
@@ -96,19 +96,19 @@ import { combineStoreDefs, makeStoreDef } from './';
    Runtime tests
 */
 
-describe('combineStoreDefs', () => {
+describe('combineStateDefs', () => {
   it('works with no action clashes', () => {
-    const FooStoreDef = makeStoreDef('hello', (state: string) => ({
+    const FooStateDef = makeStateDef('hello', (state: string) => ({
       hello() { return state + state; },
     }));
-    const BarStoreDef = makeStoreDef(1, (state: number) => ({
+    const BarStateDef = makeStateDef(1, (state: number) => ({
       world() { return state + 2; },
     }));
-    const combinedStoreDef = combineStoreDefs({
-      foo: FooStoreDef,
-      bar: BarStoreDef,
+    const combinedStateDef = combineStateDefs({
+      foo: FooStateDef,
+      bar: BarStateDef,
     });
-    const { reducer, actions } = combinedStoreDef;
+    const { reducer, actions } = combinedStateDef;
     const store = createStore(reducer);
     assert.deepEqual({ foo: 'hello', bar: 1 }, store.getState());
     store.dispatch(actions.foo.hello());
@@ -118,17 +118,17 @@ describe('combineStoreDefs', () => {
   });
 
   it('works even with action name clashes', () => {
-    const FooStoreDef = makeStoreDef('hello', (state: string) => ({
+    const FooStateDef = makeStateDef('hello', (state: string) => ({
       hello() { return state + state; },
     }));
-    const BarStoreDef = makeStoreDef(1, (state: number) => ({
+    const BarStateDef = makeStateDef(1, (state: number) => ({
       hello() { return state + 2; },
     }));
-    const combinedStoreDef = combineStoreDefs({
-      foo: FooStoreDef,
-      bar: BarStoreDef,
+    const combinedStateDef = combineStateDefs({
+      foo: FooStateDef,
+      bar: BarStateDef,
     });
-    const { reducer, actions } = combinedStoreDef;
+    const { reducer, actions } = combinedStateDef;
     const store = createStore(reducer);
     assert.deepEqual({ foo: 'hello', bar: 1 }, store.getState());
     store.dispatch(actions.foo.hello());

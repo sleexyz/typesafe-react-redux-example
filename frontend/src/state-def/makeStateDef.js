@@ -4,10 +4,10 @@ import type {
   $StateFunctionMap,
   $ActionsMap,
   $Reducer,
-  $StoreDef,
+  $StateDef,
 } from './types';
 
-const makeActionsFromStoreDef =
+const makeActionsFromStateDef =
   <State, StateFunctionMap: $StateFunctionMap<State>>
   (makeStateFunctionMap: State => StateFunctionMap): $ActionsMap<State, StateFunctionMap> => {
     const keys = Object.keys((makeStateFunctionMap: any)()); // eslint-disable-line flowtype/no-weak-types
@@ -23,7 +23,7 @@ const makeActionsFromStoreDef =
     return actions;
   };
 
-const makeReducerFromStoreDef =
+const makeReducerFromStateDef =
   <State, StateFunctionMap: $StateFunctionMap<State>>
   (initialState: State, makeStateFunctionMap: State => StateFunctionMap): $Reducer<State, StateFunctionMap> => {
     const stateFunctionMap = {};
@@ -44,12 +44,12 @@ const makeReducerFromStoreDef =
     return reducer;
   };
 
-const makeStoreDef =
+const makeStateDef =
   <State, StateFunctionMap: $StateFunctionMap<State>>
-  (initialState: State, makeStateFunctionMap: State => StateFunctionMap): $StoreDef<State, StateFunctionMap> => ({
+  (initialState: State, makeStateFunctionMap: State => StateFunctionMap): $StateDef<State, StateFunctionMap> => ({
     initialState,
-    actions: makeActionsFromStoreDef(makeStateFunctionMap),
-    reducer: makeReducerFromStoreDef(initialState, makeStateFunctionMap),
+    actions: makeActionsFromStateDef(makeStateFunctionMap),
+    reducer: makeReducerFromStateDef(initialState, makeStateFunctionMap),
   });
 
-export default makeStoreDef;
+export default makeStateDef;
