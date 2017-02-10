@@ -1,7 +1,7 @@
 // @flow
 import { applyMiddleware, createStore } from 'redux';
 import createLogger from 'redux-logger';
-import { reducer } from 'app/store_defs';
+import { reducer } from 'app/state';
 
 const logger = createLogger({
   timestamp: false,

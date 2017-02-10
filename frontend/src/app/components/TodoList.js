@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import store from 'app/store';
-import { actions } from 'app/store_defs';
+import { actions } from 'app/state';
 import TodoListEntry from 'app/components/TodoListEntry';
 
 const addOnClick = () => {

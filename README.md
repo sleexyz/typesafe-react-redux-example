@@ -45,21 +45,21 @@ In this example project, we choose the convention of placing all generated code 
        └── gen/
 ```
 
-### StoreDefs
+### StateDefs
 
-StoreDefs are units of data that describe:
+StateDefs are units of data that describe:
 
 1. how state is structured
 2. how state is initialized
-3. the methods that modify those actions
+3. elementary, synchronous methods that modify those actions
 
-An object with StoreDef values can be transformed into a single, auto-namespaced StoreDef. (TODO: implement and document)
+An object with StateDef values can be transformed into a single, auto-namespaced StateDef.
 
-For those familiar with Redux, a StoreDef is a unit of data that subsumes:
+For those familiar with Redux, a StateDef is a unit of data that subsumes:
 
-1. your Redux Store type
-2. your Redux Store initial state
-3. your Redux Reducers
-4. your Redux Actions
-5. your Redux Action Constants
-6. A simple, synchronous subset of your Redux Action Creators
+1. Redux Store type
+2. Redux Store initial state
+3. Redux Reducers
+4. Redux Actions
+5. Redux Action Constants
+6. An elementary, synchronous subset of Redux Action Creators
