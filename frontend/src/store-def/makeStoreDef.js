@@ -1,68 +1,55 @@
 // @flow
 /* eslint max-len: 0 */
-import type { Reducer } from 'redux';
+import type {
+  $StateFunctionMap,
+  $ActionsMap,
+  $Reducer,
+  $StoreDef,
+} from './types';
 
-// We use ActionsObj<S, O> in order to preserve the type variable O
-// which carries the payload type information,
-// which would otherwise be lost in _ActionsObj<S>
-
-type _ActionsObj<S> = {
-  [key: string]: * => S,
-};
-
-type ActionsObj<S, O> = O & _ActionsObj<S>;
-
-export type Action<P, O> = { type: $Keys<O>, payload?: P, error?: Error };
-
-type ActionsType<S, O> = $ObjMap<O, <P>(v: P => S) => (payload?: P, error?: Error) => Action<P, O>>;
-
-// eslint-disable-next-line flowtype/no-weak-types
-type ReducerType<S, O> = Reducer<S, {type: $Keys<O>, payload?: any, error?: Error}>;
-
-export type StoreDef<S, O> = {
-  initialState: S,
-  actions: ActionsType<S, O>,
-  reducer: ReducerType<S, O>,
-};
-
-const makeActionsFromStoreDef = <S, O: _ActionsObj<S>>
-  (makeActionsObj: S => ActionsObj<S, O>): ActionsType<S, O> => {
-  const keys = Object.keys((makeActionsObj: any)()); // eslint-disable-line flowtype/no-weak-types
-  const actions = {};
-  for (let i = 0; i < keys.length; i += 1) {
-    const key = keys[i];
-    actions[key] = (payload, error) => ({
-      error,
-      payload,
-      type: key,
-    });
-  }
-  return actions;
-};
-
-const makeReducerFromStoreDef = <S, O: _ActionsObj<S>> (initialState: S, makeActionsObj: S => ActionsObj<S, O>): ReducerType<S, O> => {
-  const actionsObj = {};
-  const keys = Object.keys((makeActionsObj: any)()); // eslint-disable-line flowtype/no-weak-types
-  for (let i = 0; i < keys.length; i += 1) {
-    const key = keys[i];
-    actionsObj[key] = (state, payload, error) => makeActionsObj(state)[key](payload, error);
-  }
-  const reducer = (state = initialState, { type, payload, error }) => {
+const makeActionsFromStoreDef =
+  <State, StateFunctionMap: $StateFunctionMap<State>>
+  (makeStateFunctionMap: State => StateFunctionMap): $ActionsMap<State, StateFunctionMap> => {
+    const keys = Object.keys((makeStateFunctionMap: any)()); // eslint-disable-line flowtype/no-weak-types
+    const actions = {};
     for (let i = 0; i < keys.length; i += 1) {
       const key = keys[i];
-      if (key === type) {
-        return actionsObj[key](state, payload, error);
-      }
+      actions[key] = (payload, error) => ({
+        error,
+        payload,
+        type: key,
+      });
     }
-    return state;
+    return actions;
   };
-  return reducer;
-};
 
-const makeStoreDef = <S, O: _ActionsObj<S>> (initialState: S, makeActionsObj: S => ActionsObj<S, O>): StoreDef<S, O> => ({
-  initialState,
-  actions: makeActionsFromStoreDef(makeActionsObj),
-  reducer: makeReducerFromStoreDef(initialState, makeActionsObj),
-});
+const makeReducerFromStoreDef =
+  <State, StateFunctionMap: $StateFunctionMap<State>>
+  (initialState: State, makeStateFunctionMap: State => StateFunctionMap): $Reducer<State, StateFunctionMap> => {
+    const stateFunctionMap = {};
+    const keys = Object.keys((makeStateFunctionMap: any)()); // eslint-disable-line flowtype/no-weak-types
+    for (let i = 0; i < keys.length; i += 1) {
+      const key = keys[i];
+      stateFunctionMap[key] = (state, payload, error) => makeStateFunctionMap(state)[key](payload, error);
+    }
+    const reducer = (state = initialState, { type, payload, error }) => {
+      for (let i = 0; i < keys.length; i += 1) {
+        const key = keys[i];
+        if (key === type) {
+          return stateFunctionMap[key](state, payload, error);
+        }
+      }
+      return state;
+    };
+    return reducer;
+  };
+
+const makeStoreDef =
+  <State, StateFunctionMap: $StateFunctionMap<State>>
+  (initialState: State, makeStateFunctionMap: State => StateFunctionMap): $StoreDef<State, StateFunctionMap> => ({
+    initialState,
+    actions: makeActionsFromStoreDef(makeStateFunctionMap),
+    reducer: makeReducerFromStoreDef(initialState, makeStateFunctionMap),
+  });
 
 export default makeStoreDef;
