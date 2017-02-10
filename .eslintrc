@@ -2,7 +2,7 @@
   "env": {
     "browser": true,
     "node": true,
-    "mocha": true,
+    "mocha": true
   },
   "extends": [
     "plugin:flowtype/recommended",
