@@ -19,7 +19,7 @@ type ActionsType<S, O> = $ObjMap<O, <P>(v: P => S) => (payload?: P, error?: Erro
 // eslint-disable-next-line flowtype/no-weak-types
 type ReducerType<S, O> = Reducer<S, {type: $Keys<O>, payload?: any, error?: Error}>;
 
-type OutputType<S, O> = {
+type StoreDef<S, O> = {
   initialState: S,
   actions: ActionsType<S, O>,
   reducer: ReducerType<S, O>,
@@ -59,54 +59,77 @@ const makeReducerFromStoreDef = <S, O: _ActionsObj<S>> (initialState: S, makeAct
   return reducer;
 };
 
-export const makeStoreDef = <S, O: _ActionsObj<S>> (initialState: S, makeActionsObj: S => ActionsObj<S, O>): OutputType<S, O> => ({
+export const makeStoreDef = <S, O: _ActionsObj<S>> (initialState: S, makeActionsObj: S => ActionsObj<S, O>): StoreDef<S, O> => ({
   initialState,
   actions: makeActionsFromStoreDef(makeActionsObj),
   reducer: makeReducerFromStoreDef(initialState, makeActionsObj),
 });
 
 type StoreDefMap = {
-  [key: string]: {
-    actions: {},
-    reducer: Function,
-  },
+  [key: string]: StoreDef<*, *>
 };
 
-type ExtractActions = <A>(v: { action: A }) => A;
+type ExtractActions = <A>(v: { actions: A }) => A;
 
-// TODO: namespace action constants
-const makeNamespacedActionsFromStoreDefMap = <O: {}>(storeDefMap: O): $ObjMap<O, ExtractActions> => {
-  const namespacedActions = {};
-  const keys = Object.keys(storeDefMap);
-  for (let i = 0; i < keys.length; i += 1) {
-    const key = keys[i];
-    namespacedActions[key] = storeDefMap[key].actions;
-  }
-  return namespacedActions;
-};
+type ExtractState = <S>(v: { reducer: (state: S, action: Action<*, *>) => S }) => S;
 
-type ExtractState = <S>(v: { reducer: (S, any) => S }) => S;
-
-const makeReducerFromStoreDefMap = <O: {}>(storeDefMap: O) => (rawState: $ObjMap<O, ExtractState>, action: any) => {
-  let state = rawState;
-  const keys = Object.keys(storeDefMap);
-  if (state == null) {
-    state = {};
-    for (let i = 0; i < keys.length; i += 1) {
-      const key = keys[i];
-      state[key] = storeDefMap[key].initialState;
-    }
-  }
-  for (let i = 0; i < keys.length; i += 1) {
-    const key = keys[i];
-    if (key === action.type) {
-      return storeDefMap[key].reducer(state, action);
-    }
+const makeInitialStateFromStoreDefMap = <O: StoreDefMap>(storeDefMap: O): $ObjMap<O, ExtractState> => {
+  const namespaces = Object.keys(storeDefMap);
+  const state = {};
+  for (let i = 0; i < namespaces.length; i += 1) {
+    const ns = namespaces[i];
+    state[ns] = storeDefMap[ns].initialState;
   }
   return state;
 };
 
-export const combineStoreDefs = <O: {}>(storeDefMap: O): * => ({
+const makeNamespacedActionsFromStoreDefMap = <O: StoreDefMap>(storeDefMap: O): $ObjMap<O, ExtractActions> => {
+  const namespacedActions = {};
+  const namespaces = Object.keys(storeDefMap);
+  for (let i = 0; i < namespaces.length; i += 1) {
+    const ns = namespaces[i];
+    const actions = storeDefMap[ns].actions;
+    const modifiedActions = {};
+    const keys = Object.keys(actions);
+    for (let j = 0; j < keys.length; j += 1) {
+      const key = keys[j];
+      modifiedActions[key] = (payload, error) => {
+        const action = actions[key](payload, error);
+        action.type = `${ns}/${action.type}`;
+        return action;
+      };
+    }
+    namespacedActions[ns] = modifiedActions;
+  }
+  return namespacedActions;
+};
+
+type CombinedAction = {type: *, payload?: *, error?: Error};
+
+const makeReducerFromStoreDefMap = <O: StoreDefMap>(storeDefMap: O) => (rawState: $ObjMap<O, ExtractState>, action: CombinedAction, error?: Error) => {
+  let state = rawState;
+  if (state == null) {
+    state = makeInitialStateFromStoreDefMap(storeDefMap);
+  }
+  // set state
+  const splitPoint = action.type.indexOf('/');
+  const ns = action.type.substr(0, splitPoint);
+  if (ns in storeDefMap) {
+    const rest = action.type.substr(splitPoint + 1);
+    state[ns] = storeDefMap[ns].reducer(state[ns], { ...action, type: rest }, error);
+  }
+  // return state
+  return state;
+};
+
+type CombineStoreDefsOutput<O> = {
+  initialState: $ObjMap<O, ExtractState>,
+  actions: $ObjMap<O, ExtractActions>,
+  reducer: (state: $ObjMap<O, ExtractState>, action: CombinedAction, error?: Error) => $ObjMap<O, ExtractState>,
+}
+
+export const combineStoreDefs = <O: {}>(storeDefMap: O): CombineStoreDefsOutput<O> => ({
+  initialState: makeInitialStateFromStoreDefMap(storeDefMap),
   actions: makeNamespacedActionsFromStoreDefMap(storeDefMap),
   reducer: makeReducerFromStoreDefMap(storeDefMap),
 });

@@ -4,7 +4,7 @@ import { assert } from 'chai';
 import { createStore } from 'redux';
 import { combineStoreDefs, makeStoreDef } from './';
 
-// makeStoreDef unifies action state with inital state, for simple types
+// makeStoreDef's action state is consistent with inital state, for simple types
 () => {
   const initialState = 'hello';
   const actionsObj = (state: typeof initialState) => ({
@@ -18,7 +18,7 @@ import { combineStoreDefs, makeStoreDef } from './';
   makeStoreDef(initialState, actionsObj);
 };
 
-// makeStoreDef unifies action state with initial state, for complex object types
+// makeStoreDef's action state is consistent initial state, for complex object types
 () => {
   const initialState = {
     counter: 1,
@@ -92,6 +92,24 @@ import { combineStoreDefs, makeStoreDef } from './';
   store.dispatch(actions.exampleAction2('hello'));
 };
 
+// getState enforces proper state shape
+() => {
+  const initialState = 'hello';
+  const actionsObj = (state: typeof initialState) => ({
+    exampleAction(v: void) {
+      return state;
+    },
+    exampleAction2(v: number) {
+      return state;
+    },
+  });
+  const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+  const store = createStore(reducer);
+  (store.getState(): string);
+  // $ExpectError
+  (store.getState(): number);
+};
+
 describe('makeStoreDef', () => {
   it('works for identity actions', () => {
     const initialState = 'hello';
@@ -133,24 +151,5 @@ describe('makeStoreDef', () => {
     assert.equal('world', store.getState());
     store.dispatch(actions.exampleAction2('asdf'));
     assert.equal('asdf', store.getState());
-  });
-});
-
-describe('combineStoreDefs', () => {
-  it('works', () => {
-    const FooStoreDef = makeStoreDef('hello', (state: string) => ({
-      foo() { return state + state; },
-    }));
-    const BarStoreDef = makeStoreDef(1, (state: number) => ({
-      bar() { return state + 2; },
-    }));
-    const newStoreDef = combineStoreDefs({
-      foo: FooStoreDef,
-      bar: BarStoreDef,
-    });
-    const { reducer, actions } = newStoreDef;
-    const store = createStore(reducer);
-    assert.deepEqual({ foo: 'hello', bar: 1 }, store.getState());
-    store.dispatch(actions.foo.foo());
   });
 });
