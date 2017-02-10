@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import store from 'app/store';
-import { actions as TodoActions } from 'app/store_defs/Todo';
+import { actions as Actions } from 'app/store_defs';
 
 type Props = {
   value: string,
@@ -10,11 +10,11 @@ type Props = {
 
 const editTodo = (index) => (e) => {
   const value = e.target.value;
-  store.dispatch(TodoActions.updateTodo({ index, value }));
+  store.dispatch(Actions.Todo.updateTodo({ index, value }));
 };
 
 const closeTodo = (index) => () => {
-  store.dispatch(TodoActions.removeTodo(index));
+  store.dispatch(Actions.Todo.removeTodo(index));
 };
 
 const TodoListEntry = ({ value, index }: Props) => (

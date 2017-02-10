@@ -2,18 +2,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import store from 'app/store';
-import { actions as TodoActions } from 'app/store_defs/Todo';
+import { actions } from 'app/store_defs';
 import TodoListEntry from 'app/components/TodoListEntry';
 
 const addOnClick = () => {
-  store.dispatch(TodoActions.createTodo());
+  store.dispatch(actions.Todo.createTodo());
 };
 
 type Props = {
   todos: Array<{
     value: string,
     id: number
-  }>
+  }>,
 };
 
 const TodoList = ({ todos }: Props) => (
@@ -24,5 +24,4 @@ const TodoList = ({ todos }: Props) => (
   </div>
 );
 
-const mapStateToProps = ({ todos }) => ({ todos });
-export default connect(mapStateToProps)(TodoList);
+export default connect(({ Todo }) => Todo)(TodoList);

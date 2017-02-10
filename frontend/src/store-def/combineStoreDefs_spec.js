@@ -4,6 +4,10 @@ import { assert } from 'chai';
 import { createStore } from 'redux';
 import { combineStoreDefs, makeStoreDef } from './';
 
+/*
+   Flowtype tests
+*/
+
 // Namespaced actions must enforce existence statically
 () => {
   const FooStoreDef = makeStoreDef('hello', (state: string) => ({
@@ -21,6 +25,8 @@ import { combineStoreDefs, makeStoreDef } from './';
   store.dispatch(actions.foo.hello());
   // $ExpectError
   store.dispatch(actions.foo.helloo());
+  // $ExpectError
+  store.dispatch(actions.fxoo.hello());
 };
 
 // Namespaced actions must enforce proper usage statically
@@ -42,7 +48,7 @@ import { combineStoreDefs, makeStoreDef } from './';
   store.dispatch(actions.foo.hello('hello'));
 };
 
-// Namespaced actions must enforce proper usage statically, even with clashing
+// Namespaced actions must enforce proper usage statically, even with potential clashing
 () => {
   const FooStoreDef = makeStoreDef('hello', (state: string) => ({
     hello(x: number) { return x.toString() + state; },
@@ -64,7 +70,7 @@ import { combineStoreDefs, makeStoreDef } from './';
   store.dispatch(actions.bar.hello('hello'));
 };
 
-// GetState enforces the right shape
+// Redux's store.getState enforces the right shape
 () => {
   const FooStoreDef = makeStoreDef('hello', (state: string) => ({
     hello(x: number) { return x.toString() + state; },
@@ -86,6 +92,10 @@ import { combineStoreDefs, makeStoreDef } from './';
   (store.getState().bar: string);
 };
 
+/*
+   Runtime tests
+*/
+
 describe('combineStoreDefs', () => {
   it('works with no action clashes', () => {
     const FooStoreDef = makeStoreDef('hello', (state: string) => ({
@@ -106,6 +116,7 @@ describe('combineStoreDefs', () => {
     store.dispatch(actions.bar.world());
     assert.deepEqual({ foo: 'hellohello', bar: 3 }, store.getState());
   });
+
   it('works even with action name clashes', () => {
     const FooStoreDef = makeStoreDef('hello', (state: string) => ({
       hello() { return state + state; },

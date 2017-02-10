@@ -4,6 +4,10 @@ import { assert } from 'chai';
 import { createStore } from 'redux';
 import { makeStoreDef } from './';
 
+/*
+   Flowtype tests
+*/
+
 // makeStoreDef's action state is consistent with inital state, for simple types
 () => {
   const initialState = 'hello';
@@ -92,7 +96,7 @@ import { makeStoreDef } from './';
   store.dispatch(actions.exampleAction2('hello'));
 };
 
-// getState enforces proper state shape
+// Redux's store.getState enforces the right shape
 () => {
   const initialState = 'hello';
   const actionsObj = (state: typeof initialState) => ({
@@ -110,6 +114,10 @@ import { makeStoreDef } from './';
   (store.getState(): number);
 };
 
+/*
+   Runtime tests
+*/
+
 describe('makeStoreDef', () => {
   it('works for identity actions', () => {
     const initialState = 'hello';
@@ -123,6 +131,7 @@ describe('makeStoreDef', () => {
     store.dispatch(actions.exampleAction());
     assert.equal(initialState, store.getState());
   });
+
   it('works for actions that modify the state', () => {
     const initialState = 'hello';
     const actionsObj = (state: typeof initialState) => ({
@@ -135,6 +144,7 @@ describe('makeStoreDef', () => {
     store.dispatch(actions.exampleAction());
     assert.equal('hellohello', store.getState());
   });
+
   it('works for multiple actions that modify the state', () => {
     const initialState = 'hello';
     const actionsObj = (state: typeof initialState) => ({
