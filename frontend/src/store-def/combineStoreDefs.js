@@ -19,7 +19,7 @@ type $CombinedStoreDefs<O> = {
   actions: $ObjMap<O, $ExtractActions>,
   reducer: (state: $ObjMap<O, $ExtractState>, action: $CombinedAction, error?: Error)
     => $ObjMap<O, $ExtractState>,
-}
+};
 
 const makeInitialStateFromStoreDefMap =
   <StoreDefMap: $StoreDefMap>

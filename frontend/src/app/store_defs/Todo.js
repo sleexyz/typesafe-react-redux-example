@@ -8,7 +8,7 @@ const initialState = {
   ],
 };
 
-const actionsDef = (state: typeof initialState) => ({
+const makeStateFunctions = (state: typeof initialState) => ({
   createTodo() {
     return {
       nextId: state.nextId + 1,
@@ -37,4 +37,4 @@ const actionsDef = (state: typeof initialState) => ({
   },
 });
 
-export default makeStoreDef(initialState, actionsDef);
+export default makeStoreDef(initialState, makeStateFunctions);

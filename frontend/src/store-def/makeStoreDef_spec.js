@@ -11,7 +11,7 @@ import { makeStoreDef } from './';
 // makeStoreDef's action state is consistent with inital state, for simple types
 () => {
   const initialState = 'hello';
-  const actionsObj = (state: typeof initialState) => ({
+  const makeStateFunctions = (state: typeof initialState) => ({
     exampleAction() {
       (state: string);
       // $ExpectError
@@ -19,7 +19,7 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  makeStoreDef(initialState, actionsObj);
+  makeStoreDef(initialState, makeStateFunctions);
 };
 
 // makeStoreDef's action state is consistent initial state, for complex object types
@@ -30,7 +30,7 @@ import { makeStoreDef } from './';
       { value: 'do something...' },
     ],
   };
-  const actionsObj = (state: typeof initialState) => ({
+  const makeStateFunctions = (state: typeof initialState) => ({
     exampleAction() {
       (state.counter: number);
       (state.todos: Array<{value: string}>);
@@ -41,13 +41,13 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  makeStoreDef(initialState, actionsObj);
+  makeStoreDef(initialState, makeStateFunctions);
 };
 
 // makeStoreDef expects state to be returned in an action
 () => {
   const initialState = 'hello';
-  const actionsObj = (state: typeof initialState) => ({
+  const makeStateFunctions = (state: typeof initialState) => ({
     // $ExpectError
     exampleAction1(v: void) {
     },
@@ -59,18 +59,18 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  makeStoreDef(initialState, actionsObj);
+  makeStoreDef(initialState, makeStateFunctions);
 };
 
 // makeStoreDef forbids nonexistent actions from being called
 () => {
   const initialState = 'hello';
-  const actionsObj = (state: typeof initialState) => ({
+  const makeStateFunctions = (state: typeof initialState) => ({
     exampleAction() {
       return state;
     },
   });
-  const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+  const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
   const store = createStore(reducer);
   // $ExpectError
   store.dispatch(actions.exampleAccction());
@@ -79,7 +79,7 @@ import { makeStoreDef } from './';
 // makeStoreDef forbids improper action usage
 () => {
   const initialState = 'hello';
-  const actionsObj = (state: typeof initialState) => ({
+  const makeStateFunctions = (state: typeof initialState) => ({
     exampleAction(v: void) {
       return state;
     },
@@ -87,7 +87,7 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+  const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
   const store = createStore(reducer);
   // $ExpectError
   store.dispatch(actions.exampleAction(1));
@@ -99,7 +99,7 @@ import { makeStoreDef } from './';
 // Redux's store.getState enforces the right shape
 () => {
   const initialState = 'hello';
-  const actionsObj = (state: typeof initialState) => ({
+  const makeStateFunctions = (state: typeof initialState) => ({
     exampleAction(v: void) {
       return state;
     },
@@ -107,7 +107,7 @@ import { makeStoreDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+  const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
   const store = createStore(reducer);
   (store.getState(): string);
   // $ExpectError
@@ -121,12 +121,12 @@ import { makeStoreDef } from './';
 describe('makeStoreDef', () => {
   it('works for identity actions', () => {
     const initialState = 'hello';
-    const actionsObj = (state: typeof initialState) => ({
+    const makeStateFunctions = (state: typeof initialState) => ({
       exampleAction(v: void) {
         return state;
       },
     });
-    const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+    const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal(initialState, store.getState());
@@ -134,12 +134,12 @@ describe('makeStoreDef', () => {
 
   it('works for actions that modify the state', () => {
     const initialState = 'hello';
-    const actionsObj = (state: typeof initialState) => ({
+    const makeStateFunctions = (state: typeof initialState) => ({
       exampleAction(v: void) {
         return state + state;
       },
     });
-    const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+    const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal('hellohello', store.getState());
@@ -147,7 +147,7 @@ describe('makeStoreDef', () => {
 
   it('works for multiple actions that modify the state', () => {
     const initialState = 'hello';
-    const actionsObj = (state: typeof initialState) => ({
+    const makeStateFunctions = (state: typeof initialState) => ({
       exampleAction(v: void) {
         return 'world';
       },
@@ -155,7 +155,7 @@ describe('makeStoreDef', () => {
         return v;
       },
     });
-    const { actions, reducer } = makeStoreDef(initialState, actionsObj);
+    const { actions, reducer } = makeStoreDef(initialState, makeStateFunctions);
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal('world', store.getState());
