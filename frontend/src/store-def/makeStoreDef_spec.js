@@ -2,7 +2,7 @@
 /* eslint no-unused-expressions: 0, no-unused-vars: 0 */
 import { assert } from 'chai';
 import { createStore } from 'redux';
-import { combineStoreDefs, makeStoreDef } from './';
+import { makeStoreDef } from './';
 
 // makeStoreDef's action state is consistent with inital state, for simple types
 () => {
