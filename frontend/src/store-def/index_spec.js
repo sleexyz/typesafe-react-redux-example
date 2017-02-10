@@ -2,7 +2,7 @@
 /* eslint no-unused-expressions: 0, no-unused-vars: 0 */
 import { assert } from 'chai';
 import { createStore } from 'redux';
-import { makeStoreDef } from './';
+import { combineStoreDefs, makeStoreDef } from './';
 
 // makeStoreDef unifies action state with inital state, for simple types
 () => {
@@ -133,5 +133,24 @@ describe('makeStoreDef', () => {
     assert.equal('world', store.getState());
     store.dispatch(actions.exampleAction2('asdf'));
     assert.equal('asdf', store.getState());
+  });
+});
+
+describe('combineStoreDefs', () => {
+  it('works', () => {
+    const FooStoreDef = makeStoreDef('hello', (state: string) => ({
+      foo() { return state + state; },
+    }));
+    const BarStoreDef = makeStoreDef(1, (state: number) => ({
+      bar() { return state + 2; },
+    }));
+    const newStoreDef = combineStoreDefs({
+      foo: FooStoreDef,
+      bar: BarStoreDef,
+    });
+    const { reducer, actions } = newStoreDef;
+    const store = createStore(reducer);
+    assert.deepEqual({ foo: 'hello', bar: 1 }, store.getState());
+    store.dispatch(actions.foo.foo());
   });
 });

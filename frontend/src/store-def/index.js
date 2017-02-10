@@ -20,6 +20,7 @@ type ActionsType<S, O> = $ObjMap<O, <P>(v: P => S) => (payload?: P, error?: Erro
 type ReducerType<S, O> = Reducer<S, {type: $Keys<O>, payload?: any, error?: Error}>;
 
 type OutputType<S, O> = {
+  initialState: S,
   actions: ActionsType<S, O>,
   reducer: ReducerType<S, O>,
 };
@@ -59,6 +60,53 @@ const makeReducerFromStoreDef = <S, O: _ActionsObj<S>> (initialState: S, makeAct
 };
 
 export const makeStoreDef = <S, O: _ActionsObj<S>> (initialState: S, makeActionsObj: S => ActionsObj<S, O>): OutputType<S, O> => ({
+  initialState,
   actions: makeActionsFromStoreDef(makeActionsObj),
   reducer: makeReducerFromStoreDef(initialState, makeActionsObj),
+});
+
+type StoreDefMap = {
+  [key: string]: {
+    actions: {},
+    reducer: Function,
+  },
+};
+
+type ExtractActions = <A>(v: { action: A }) => A;
+
+// TODO: namespace action constants
+const makeNamespacedActionsFromStoreDefMap = <O: {}>(storeDefMap: O): $ObjMap<O, ExtractActions> => {
+  const namespacedActions = {};
+  const keys = Object.keys(storeDefMap);
+  for (let i = 0; i < keys.length; i += 1) {
+    const key = keys[i];
+    namespacedActions[key] = storeDefMap[key].actions;
+  }
+  return namespacedActions;
+};
+
+type ExtractState = <S>(v: { reducer: (S, any) => S }) => S;
+
+const makeReducerFromStoreDefMap = <O: {}>(storeDefMap: O) => (rawState: $ObjMap<O, ExtractState>, action: any) => {
+  let state = rawState;
+  const keys = Object.keys(storeDefMap);
+  if (state == null) {
+    state = {};
+    for (let i = 0; i < keys.length; i += 1) {
+      const key = keys[i];
+      state[key] = storeDefMap[key].initialState;
+    }
+  }
+  for (let i = 0; i < keys.length; i += 1) {
+    const key = keys[i];
+    if (key === action.type) {
+      return storeDefMap[key].reducer(state, action);
+    }
+  }
+  return state;
+};
+
+export const combineStoreDefs = <O: {}>(storeDefMap: O): * => ({
+  actions: makeNamespacedActionsFromStoreDefMap(storeDefMap),
+  reducer: makeReducerFromStoreDefMap(storeDefMap),
 });
