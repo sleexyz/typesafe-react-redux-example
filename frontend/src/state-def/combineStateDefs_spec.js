@@ -63,11 +63,11 @@ import { combineStateDefs, makeStateDef } from './';
   const { reducer, actions } = combinedStateDef;
   const store = createStore(reducer);
   store.dispatch(actions.foo.hello(1));
+  store.dispatch(actions.bar.hello('hello'));
   // $ExpectError
   store.dispatch(actions.bar.hello(1));
   // $ExpectError
   store.dispatch(actions.foo.hello('hello'));
-  store.dispatch(actions.bar.hello('hello'));
 };
 
 // Redux's store.getState enforces the right shape
@@ -85,11 +85,33 @@ import { combineStateDefs, makeStateDef } from './';
   const { reducer, actions } = combinedStateDef;
   const store = createStore(reducer);
   (store.getState().foo: string);
-  // $ExpectError
-  (store.getState().foo: number);
   (store.getState().bar: number);
   // $ExpectError
+  (store.getState().foo: number);
+  // $ExpectError
   (store.getState().bar: string);
+};
+
+// Selectors enforce the right shape
+() => {
+  const FooStateDef = makeStateDef('hello', (state: string) => ({
+    hello(x: number) { return x.toString() + state; },
+  }));
+  const BarStateDef = makeStateDef(1, (state: number) => ({
+    hello(x: string) { return state + x.length; },
+  }));
+  const combinedStateDef = combineStateDefs({
+    foo: FooStateDef,
+    bar: BarStateDef,
+  });
+  const { reducer, actions, selectors } = combinedStateDef;
+  const store = createStore(reducer);
+  (selectors.foo(store.getState()): string);
+  (selectors.bar(store.getState()): number);
+  // $ExpectError
+  (selectors.foo(store.getState()): number);
+  // $ExpectError
+  (selectors.bar(store.getState()): string);
 };
 
 /*
@@ -119,7 +141,7 @@ describe('combineStateDefs', () => {
 
   it('works even with action name clashes', () => {
     const FooStateDef = makeStateDef('hello', (state: string) => ({
-      hello() { return state + state; },
+      hello(payload: string) { return state + payload; },
     }));
     const BarStateDef = makeStateDef(1, (state: number) => ({
       hello() { return state + 2; },
@@ -131,9 +153,26 @@ describe('combineStateDefs', () => {
     const { reducer, actions } = combinedStateDef;
     const store = createStore(reducer);
     assert.deepEqual({ foo: 'hello', bar: 1 }, store.getState());
-    store.dispatch(actions.foo.hello());
-    assert.deepEqual({ foo: 'hellohello', bar: 1 }, store.getState());
+    store.dispatch(actions.foo.hello('asdf'));
+    assert.deepEqual({ foo: 'helloasdf', bar: 1 }, store.getState());
     store.dispatch(actions.bar.hello());
-    assert.deepEqual({ foo: 'hellohello', bar: 3 }, store.getState());
+    assert.deepEqual({ foo: 'helloasdf', bar: 3 }, store.getState());
+  });
+
+  it('returns working selectors', () => {
+    const FooStateDef = makeStateDef('hello', (state: string) => ({
+      hello() { return state + state; },
+    }));
+    const BarStateDef = makeStateDef(1, (state: number) => ({
+      hello() { return state + 2; },
+    }));
+    const combinedStateDef = combineStateDefs({
+      foo: FooStateDef,
+      bar: BarStateDef,
+    });
+    const { reducer, actions, selectors } = combinedStateDef;
+    const store = createStore(reducer);
+    assert.equal('hello', selectors.foo(store.getState()));
+    assert.equal(1, selectors.bar(store.getState()));
   });
 });

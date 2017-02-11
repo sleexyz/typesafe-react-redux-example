@@ -1,5 +1,4 @@
 // @flow
-
 import type { Reducer } from 'redux';
 
 export type $StateFunction<State, Payload> = Payload => State;

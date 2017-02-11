@@ -1,14 +1,22 @@
 // @flow
 import { makeStateDef } from 'state-def';
 
-const initialState = {
-  nextId: 1,
-  todos: [
-    { value: 'write todomvc', id: 0 },
-  ],
+export type Entry = {
+  value: string,
+  id: number,
 };
 
-const makeStateFunctions = (state: typeof initialState) => ({
+export type State = {
+  nextId: number,
+  todos: Array<Entry>,
+}
+
+const initialState: State = {
+  nextId: 0,
+  todos: [],
+};
+
+const makeStateFunctions = (state: State) => ({
   createTodo() {
     return {
       nextId: state.nextId + 1,
