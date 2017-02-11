@@ -53,7 +53,7 @@ StateDefs are units of data that describe:
 2. how state is initialized
 3. elementary, synchronous methods that modify those actions
 
-An object with StateDef values can be transformed into a single, StateDefCollection with `combineStateDefs`.
+An object with StateDef values can be transformed into a single, StateDefCollection with `combineStateDefs`. (TODO: document once API is settled down)
 
 For those familiar with Redux, a StateDef is a unit of data that subsumes:
 
@@ -69,7 +69,7 @@ For those familiar with Redux, a StateDef is a unit of data that subsumes:
 
 #### 1) Import `dispatch` directly
 Many of Redux + React-Redux's design decisions stem from the requirement of server-side rendering.
-For example, that's why [`dispatch` is always passed through props DI-style](http://stackoverflow.com/questions/33221634/why-use-this-props-dispatch-rather-than-store-dispatch-directly-in-redux).
+For example, that's why [`dispatch` is always inject via props](http://stackoverflow.com/questions/33221634/why-use-this-props-dispatch-rather-than-store-dispatch-directly-in-redux).
 If we're never going to do server rendering, then we shouldn't make sacrifices for it.
 
 Note: we still use `Provider` and `connect` to make components reactive to changes to the store.
