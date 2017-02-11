@@ -49,15 +49,15 @@ In this example project, we choose the convention of placing all generated code 
 
 StateDefs are units of data that describe:
 
-1. how state is structured
+1. the types of state
 2. how state is initialized
 3. elementary, synchronous methods that modify those actions
 
-An object with StateDef values can be transformed into a single, auto-namespaced StateDef.
+An object with StateDef values can be transformed into a single, StateDefCollection with `combineStateDefs`.
 
 For those familiar with Redux, a StateDef is a unit of data that subsumes:
 
-1. Redux Store type
+1. Redux Store Types
 2. Redux Store initial state
 3. Redux Reducers
 4. Redux Actions
@@ -75,10 +75,8 @@ If we're never going to do server rendering, then we shouldn't make sacrifices f
 Note: we still use `Provider` and `connect` to make components reactive to changes to the store.
 
 #### 2) Unconstrained Component Hierarchy
-One should surely create a palette of ultra-dumb, reusable components as much one can.
+We should expand our palette of ultra-dumb, reusable components as much we can.
 
-But there's no benefit to putting a constraint on the structure of component *hierarchies*; namely, the constraint that only top-level components should be connected to Redux.
-Constraining state-awareness to top-level components is unscalable for complex UI's with multiple state-aware parts. We want to be as close to the store as we can.
-
-Having a unconstrained component hierarchy, combined with the ability to directly import `dispatch`,
-incentivize reuse of (testable) Action Creators, instead of creating (often untested) ad-hoc callbacks/auxilliary functions.
+But there's no benefit to putting a constraint on the structure of component *hierarchies*; namely, a constraint that only top-level components should be connected to Redux.
+Constraining state-awareness to top-level components is unscalable for complex UI's with multiple *intrinsically* state-aware parts.
+We want to be as close to the store as we can and minimize the amount of props we need to pass around, by emphasizing *selectors* over manual *state* injection via props.
