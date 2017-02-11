@@ -63,3 +63,22 @@ For those familiar with Redux, a StateDef is a unit of data that subsumes:
 4. Redux Actions
 5. Redux Action Constants
 6. An elementary, synchronous subset of Redux Action Creators
+7. Redux Selectors (TODO: implement)
+
+### Other Architectural Decisions
+
+#### 1) Import `dispatch` directly
+Many of Redux + React-Redux's design decisions stem from the requirement of server-side rendering.
+For example, that's why [`dispatch` is always passed through props DI-style](http://stackoverflow.com/questions/33221634/why-use-this-props-dispatch-rather-than-store-dispatch-directly-in-redux).
+If we're never going to do server rendering, then we shouldn't make sacrifices for it.
+
+Note: we still use `Provider` and `connect` to make components reactive to changes to the store.
+
+#### 2) Unconstrained Component Hierarchy
+One should surely create a palette of ultra-dumb, reusable components as much one can.
+
+But there's no benefit to putting a constraint on the structure of component *hierarchies*; namely, the constraint that only top-level components should be connected to Redux.
+Constraining state-awareness to top-level components is unscalable for complex UI's with multiple state-aware parts. We want to be as close to the store as we can.
+
+Having a unconstrained component hierarchy, combined with the ability to directly import `dispatch`,
+incentivize reuse of (testable) Action Creators, instead of creating (often untested) ad-hoc callbacks/auxilliary functions.
