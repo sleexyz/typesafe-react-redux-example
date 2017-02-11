@@ -6,4 +6,4 @@ const stateDef = combineStateDefs({
   Todo,
 });
 
-export const { actions, reducer } = stateDef;
+export const { actions, reducer, selectors } = stateDef;

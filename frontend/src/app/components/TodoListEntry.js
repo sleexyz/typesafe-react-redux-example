@@ -11,6 +11,7 @@ type Props = {
 const editTodo = (index) => (e) => {
   const value = e.target.value;
   store.dispatch(Actions.Todo.updateTodo({ index, value }));
+  store.dispatch(Actions.Todo.updateTodo({ index, value }));
 };
 
 const closeTodo = (index) => () => {

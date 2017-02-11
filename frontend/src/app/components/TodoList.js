@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import store from 'app/store';
-import { actions } from 'app/state';
+import { actions, selectors } from 'app/state';
 import TodoListEntry from 'app/components/TodoListEntry';
 
 const addOnClick = () => {
@@ -12,7 +12,7 @@ const addOnClick = () => {
 type Props = {
   todos: Array<{
     value: string,
-    id: number
+    id: number,
   }>,
 };
 
@@ -24,4 +24,4 @@ const TodoList = ({ todos }: Props) => (
   </div>
 );
 
-export default connect(({ Todo }) => Todo)(TodoList);
+export default connect(selectors.Todo)(TodoList);
