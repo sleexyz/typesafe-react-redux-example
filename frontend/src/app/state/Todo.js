@@ -45,4 +45,6 @@ const makeStateFunctions = (state: State) => ({
   },
 });
 
-export default makeStateDef({ initialState, makeStateFunctions });
+const selectors = {};
+
+export default makeStateDef({ initialState, makeStateFunctions, selectors });

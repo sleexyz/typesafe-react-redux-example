@@ -5,9 +5,10 @@ import type {
   $ActionsMap,
   $Reducer,
   $StateDef,
+  $SelectorsMap,
 } from './types';
 
-const makeActionsFromStateDef =
+const makeActions =
   <State, StateFunctionMap: $StateFunctionMap<State>>
   (makeStateFunctionMap: State => StateFunctionMap): $ActionsMap<State, StateFunctionMap> => {
     const keys = Object.keys((makeStateFunctionMap: any)()); // eslint-disable-line flowtype/no-weak-types
@@ -23,7 +24,7 @@ const makeActionsFromStateDef =
     return actions;
   };
 
-const makeReducerFromStateDef =
+const makeReducer =
   <State, StateFunctionMap: $StateFunctionMap<State>>
   (initialState: State, makeStateFunctionMap: State => StateFunctionMap): $Reducer<State, StateFunctionMap> => {
     const stateFunctionMap = {};
@@ -44,19 +45,28 @@ const makeReducerFromStateDef =
     return reducer;
   };
 
-type $StateDefInput<State, StateFunctionMap> = {
+type $StateDefInput<State, StateFunctionMap, SelectorsMap> = {
   initialState: State,
   makeStateFunctions: State => StateFunctionMap,
-  // TODO: consider switching to something like
-  // stateFunctions: { [key: String]: (State, *) => State }
+  selectors: SelectorsMap,
 };
 
 const makeStateDef =
-  <State, StateFunctionMap: $StateFunctionMap<State>>
-  ({ initialState, makeStateFunctions }: $StateDefInput<State, StateFunctionMap>): $StateDef<State, StateFunctionMap> => ({
-    initialState,
-    actions: makeActionsFromStateDef(makeStateFunctions),
-    reducer: makeReducerFromStateDef(initialState, makeStateFunctions),
-  });
+  <State, StateFunctionMap: $StateFunctionMap<State>, SelectorsMap: $SelectorsMap<State>>
+  (
+   input: $StateDefInput<State, StateFunctionMap, SelectorsMap>,
+  ): $StateDef<State, StateFunctionMap, SelectorsMap> => {
+    const {
+      initialState,
+      makeStateFunctions,
+      selectors,
+    } = input;
+    return {
+      initialState,
+      selectors,
+      actions: makeActions(makeStateFunctions),
+      reducer: makeReducer(initialState, makeStateFunctions),
+    };
+  };
 
 export default makeStateDef;

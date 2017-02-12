@@ -5,7 +5,7 @@ import type {
 } from './types';
 
 type $StateDefMap = {
-  [key: string]: $StateDef<*, *>
+  [key: string]: $StateDef<*, *, *>
 };
 
 type $ExtractActions =

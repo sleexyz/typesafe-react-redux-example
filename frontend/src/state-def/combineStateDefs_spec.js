@@ -15,12 +15,14 @@ import { combineStateDefs, makeStateDef } from './';
     makeStateFunctions: (state: string) => ({
       hello() { return state + state; },
     }),
+    selectors: {},
   });
   const BarStateDef = makeStateDef({
     initialState: 1,
     makeStateFunctions: (state: number) => ({
       world() { return state + 2; },
     }),
+    selectors: {},
   });
   const combinedStateDef = combineStateDefs({
     foo: FooStateDef,
@@ -42,12 +44,14 @@ import { combineStateDefs, makeStateDef } from './';
     makeStateFunctions: (state: string) => ({
       hello(x: number) { return x.toString() + state; },
     }),
+    selectors: {},
   });
   const BarStateDef = makeStateDef({
     initialState: 1,
     makeStateFunctions: (state: number) => ({
       world() { return state + 2; },
     }),
+    selectors: {},
   });
   const combinedStateDef = combineStateDefs({
     foo: FooStateDef,
@@ -67,12 +71,14 @@ import { combineStateDefs, makeStateDef } from './';
     makeStateFunctions: (state: string) => ({
       hello(x: number) { return x.toString() + state; },
     }),
+    selectors: {},
   });
   const BarStateDef = makeStateDef({
     initialState: 1,
     makeStateFunctions: (state: number) => ({
       hello(x: string) { return state + x.length; },
     }),
+    selectors: {},
   });
   const combinedStateDef = combineStateDefs({
     foo: FooStateDef,
@@ -95,12 +101,14 @@ import { combineStateDefs, makeStateDef } from './';
     makeStateFunctions: (state: string) => ({
       hello(x: number) { return x.toString() + state; },
     }),
+    selectors: {},
   });
   const BarStateDef = makeStateDef({
     initialState: 1,
     makeStateFunctions: (state: number) => ({
       hello(x: string) { return state + x.length; },
     }),
+    selectors: {},
   });
   const combinedStateDef = combineStateDefs({
     foo: FooStateDef,
@@ -123,12 +131,14 @@ import { combineStateDefs, makeStateDef } from './';
     makeStateFunctions: (state: string) => ({
       hello(x: number) { return x.toString() + state; },
     }),
+    selectors: {},
   });
   const BarStateDef = makeStateDef({
     initialState: 1,
     makeStateFunctions: (state: number) => ({
       hello(x: string) { return state + x.length; },
     }),
+    selectors: {},
   });
   const combinedStateDef = combineStateDefs({
     foo: FooStateDef,
@@ -155,12 +165,14 @@ describe('combineStateDefs', () => {
       makeStateFunctions: (state: string) => ({
         hello() { return state + state; },
       }),
+      selectors: {},
     });
     const BarStateDef = makeStateDef({
       initialState: 1,
       makeStateFunctions: (state: number) => ({
         world() { return state + 2; },
       }),
+      selectors: {},
     });
     const combinedStateDef = combineStateDefs({
       foo: FooStateDef,
@@ -181,12 +193,14 @@ describe('combineStateDefs', () => {
       makeStateFunctions: (state: string) => ({
         hello(payload: string) { return state + payload; },
       }),
+      selectors: {},
     });
     const BarStateDef = makeStateDef({
       initialState: 1,
       makeStateFunctions: (state: number) => ({
         hello() { return state + 2; },
       }),
+      selectors: {},
     });
     const combinedStateDef = combineStateDefs({
       foo: FooStateDef,
@@ -207,12 +221,14 @@ describe('combineStateDefs', () => {
       makeStateFunctions: (state: string) => ({
         hello() { return state + state; },
       }),
+      selectors: {},
     });
     const BarStateDef = makeStateDef({
       initialState: 1,
       makeStateFunctions: (state: number) => ({
         hello() { return state + 2; },
       }),
+      selectors: {},
     });
     const combinedStateDef = combineStateDefs({
       foo: FooStateDef,

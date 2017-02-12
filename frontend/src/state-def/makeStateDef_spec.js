@@ -19,7 +19,8 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  makeStateDef({ initialState, makeStateFunctions });
+  const selectors = {};
+  makeStateDef({ initialState, makeStateFunctions, selectors });
 };
 
 // makeStateDef's action state is consistent initial state, for complex object types
@@ -41,7 +42,8 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  makeStateDef({ initialState, makeStateFunctions });
+  const selectors = {};
+  makeStateDef({ initialState, makeStateFunctions, selectors });
 };
 
 // makeStateDef expects state to be returned in an action
@@ -59,7 +61,8 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  makeStateDef({ initialState, makeStateFunctions });
+  const selectors = {};
+  makeStateDef({ initialState, makeStateFunctions, selectors });
 };
 
 // makeStateDef forbids nonexistent actions from being called
@@ -70,7 +73,8 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
+  const selectors = {};
+  const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions, selectors });
   const store = createStore(reducer);
   // $ExpectError
   store.dispatch(actions.exampleAccction());
@@ -87,7 +91,8 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
+  const selectors = {};
+  const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions, selectors });
   const store = createStore(reducer);
   // $ExpectError
   store.dispatch(actions.exampleAction(1));
@@ -107,11 +112,64 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
+  const selectors = {};
+  const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions, selectors });
   const store = createStore(reducer);
   (store.getState(): string);
   // $ExpectError
   (store.getState(): number);
+};
+
+// Invalid Selectors are forbidden
+() => {
+  const initialState = 'hello';
+  type State = string;
+  const makeStateFunctions = (state: State) => ({
+    exampleAction(v: void) {
+      return state;
+    },
+    exampleAction2(v: number) {
+      return state;
+    },
+  });
+  const selectors = {
+    // $ExpectError
+    foo: (state: number) => state,
+  };
+  const stateDef = makeStateDef({
+    initialState,
+    makeStateFunctions,
+    selectors,
+  });
+};
+
+// Valid Selectors must typecheck and enforce proper usage
+() => {
+  const initialState = 'hello';
+  type State = string;
+  const makeStateFunctions = (state: State) => ({
+    exampleAction(v: void) {
+      return state;
+    },
+    exampleAction2(v: number) {
+      return state;
+    },
+  });
+  const selectors = {
+    head: (state: State) => state.slice(0, 1),
+    length: (state: State) => state.length,
+  };
+  const stateDef = makeStateDef({
+    initialState,
+    makeStateFunctions,
+    selectors,
+  });
+  createStore(stateDef.reducer);
+  // $ExpectError
+  stateDef.selectors.asdf;
+  stateDef.selectors.head('foo');
+  // $ExpectError
+  stateDef.selectors.head(1);
 };
 
 /*
@@ -126,7 +184,8 @@ describe('makeStateDef', () => {
         return state;
       },
     });
-    const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
+    const selectors = {};
+    const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions, selectors });
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal(initialState, store.getState());
@@ -139,7 +198,8 @@ describe('makeStateDef', () => {
         return state + state;
       },
     });
-    const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
+    const selectors = {};
+    const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions, selectors });
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal('hellohello', store.getState());
@@ -155,7 +215,8 @@ describe('makeStateDef', () => {
         return v;
       },
     });
-    const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
+    const selectors = {};
+    const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions, selectors });
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal('world', store.getState());
