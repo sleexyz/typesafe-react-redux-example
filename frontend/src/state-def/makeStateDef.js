@@ -44,12 +44,19 @@ const makeReducerFromStateDef =
     return reducer;
   };
 
+type $StateDefInput<State, StateFunctionMap> = {
+  initialState: State,
+  makeStateFunctions: State => StateFunctionMap,
+  // TODO: consider switching to something like
+  // stateFunctions: { [key: String]: (State, *) => State }
+};
+
 const makeStateDef =
   <State, StateFunctionMap: $StateFunctionMap<State>>
-  (initialState: State, makeStateFunctionMap: State => StateFunctionMap): $StateDef<State, StateFunctionMap> => ({
+  ({ initialState, makeStateFunctions }: $StateDefInput<State, StateFunctionMap>): $StateDef<State, StateFunctionMap> => ({
     initialState,
-    actions: makeActionsFromStateDef(makeStateFunctionMap),
-    reducer: makeReducerFromStateDef(initialState, makeStateFunctionMap),
+    actions: makeActionsFromStateDef(makeStateFunctions),
+    reducer: makeReducerFromStateDef(initialState, makeStateFunctions),
   });
 
 export default makeStateDef;

@@ -45,4 +45,4 @@ const makeStateFunctions = (state: State) => ({
   },
 });
 
-export default makeStateDef(initialState, makeStateFunctions);
+export default makeStateDef({ initialState, makeStateFunctions });

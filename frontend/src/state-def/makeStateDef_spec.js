@@ -19,7 +19,7 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  makeStateDef(initialState, makeStateFunctions);
+  makeStateDef({ initialState, makeStateFunctions });
 };
 
 // makeStateDef's action state is consistent initial state, for complex object types
@@ -41,7 +41,7 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  makeStateDef(initialState, makeStateFunctions);
+  makeStateDef({ initialState, makeStateFunctions });
 };
 
 // makeStateDef expects state to be returned in an action
@@ -59,7 +59,7 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  makeStateDef(initialState, makeStateFunctions);
+  makeStateDef({ initialState, makeStateFunctions });
 };
 
 // makeStateDef forbids nonexistent actions from being called
@@ -70,7 +70,7 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
+  const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
   const store = createStore(reducer);
   // $ExpectError
   store.dispatch(actions.exampleAccction());
@@ -87,7 +87,7 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
+  const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
   const store = createStore(reducer);
   // $ExpectError
   store.dispatch(actions.exampleAction(1));
@@ -107,7 +107,7 @@ import { makeStateDef } from './';
       return state;
     },
   });
-  const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
+  const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
   const store = createStore(reducer);
   (store.getState(): string);
   // $ExpectError
@@ -126,7 +126,7 @@ describe('makeStateDef', () => {
         return state;
       },
     });
-    const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
+    const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal(initialState, store.getState());
@@ -139,7 +139,7 @@ describe('makeStateDef', () => {
         return state + state;
       },
     });
-    const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
+    const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal('hellohello', store.getState());
@@ -155,7 +155,7 @@ describe('makeStateDef', () => {
         return v;
       },
     });
-    const { actions, reducer } = makeStateDef(initialState, makeStateFunctions);
+    const { actions, reducer } = makeStateDef({ initialState, makeStateFunctions });
     const store = createStore(reducer);
     store.dispatch(actions.exampleAction());
     assert.equal('world', store.getState());
