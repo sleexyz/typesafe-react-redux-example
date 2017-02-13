@@ -45,6 +45,8 @@ const makeStateFunctions = (state: State) => ({
   },
 });
 
-const selectors = {};
+const selectors = {
+  getTodo: (i: number) => (state: State) => state.todos[i],
+};
 
 export default makeStateDef({ initialState, makeStateFunctions, selectors });

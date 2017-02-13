@@ -23,7 +23,7 @@ type $ExtractActionCreator<State, StateFunctionMap> =
   <Payload>(v: $StateFunction<State, Payload>) => $ActionCreator<Payload, StateFunctionMap>
 
 export type $SelectorsMap<State> = {
-  [key: string]: State => *,
+  [key: string]: * => State => *,
 };
 
 // eslint-disable-next-line flowtype/no-weak-types

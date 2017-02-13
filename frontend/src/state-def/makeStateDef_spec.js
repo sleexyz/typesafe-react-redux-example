@@ -23,7 +23,7 @@ import { makeStateDef } from './';
   makeStateDef({ initialState, makeStateFunctions, selectors });
 };
 
-// makeStateDef's action state is consistent initial state, for complex object types
+// makeStateDef's action state is consistent with initial state, for complex object types
 () => {
   const initialState = {
     counter: 1,
@@ -134,7 +134,7 @@ import { makeStateDef } from './';
   });
   const selectors = {
     // $ExpectError
-    foo: (state: number) => state,
+    foo: () => (state: number) => state,
   };
   const stateDef = makeStateDef({
     initialState,
@@ -156,8 +156,8 @@ import { makeStateDef } from './';
     },
   });
   const selectors = {
-    head: (state: State) => state.slice(0, 1),
-    length: (state: State) => state.length,
+    head: () => (state: State) => state.slice(0, 1),
+    length: () => (state: State) => state.length,
   };
   const stateDef = makeStateDef({
     initialState,
@@ -167,9 +167,9 @@ import { makeStateDef } from './';
   createStore(stateDef.reducer);
   // $ExpectError
   stateDef.selectors.asdf;
-  stateDef.selectors.head('foo');
+  stateDef.selectors.head()('foo');
   // $ExpectError
-  stateDef.selectors.head(1);
+  stateDef.selectors.head()(1);
 };
 
 /*
@@ -222,5 +222,33 @@ describe('makeStateDef', () => {
     assert.equal('world', store.getState());
     store.dispatch(actions.exampleAction2('asdf'));
     assert.equal('asdf', store.getState());
+  });
+
+  describe('for selectors', () => {
+    it('correctly passes selectors through', () => {
+      const initialState = 'hello';
+      const makeStateFunctions = (state: typeof initialState) => ({
+        exampleAction(v: void) {
+          return 'world';
+        },
+        exampleAction2(v: string) {
+          return v;
+        },
+      });
+      const inputSelectors = {
+        head: () => (state) => state.slice(0, 1),
+        length: () => (state) => state.length,
+      };
+      const { actions, reducer, selectors } = makeStateDef({
+        initialState,
+        makeStateFunctions,
+        selectors: inputSelectors,
+      });
+      const store = createStore(reducer);
+      assert.equal(selectors.head()(store.getState()), 'h');
+      assert.equal(selectors.length()(store.getState()), 5);
+      store.dispatch(actions.exampleAction());
+      assert.equal(selectors.head()(store.getState()), 'w');
+    });
   });
 });
