@@ -29,6 +29,7 @@
     "flow-bin": "^0.39.0",
     "mocha": "^3.2.0",
     "mocha-loader": "^1.1.0",
+    "serve-static": "^1.11.2",
     "webpack": "2.2.0",
     "webpack-dev-middleware": "^1.9.0",
     "webpack-hot-middleware": "^2.15.0",
@@ -39,7 +40,8 @@
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
     "redux": "^3.6.0",
-    "redux-logger": "^2.8.1"
+    "redux-logger": "^2.8.1",
+    "styled-components": "^1.4.3"
   },
   "scripts": {
     "test": "yarn run lint && flow && yarn run test-node",
