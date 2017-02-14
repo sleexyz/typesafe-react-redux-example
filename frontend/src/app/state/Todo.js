@@ -1,8 +1,6 @@
 // @flow
 import { makeStateDef } from 'state-def';
 
-export const namespace = 'Todo';
-
 export type Entry = {
   value: string,
   id: number,
@@ -13,16 +11,16 @@ export type State = {
   todos: Array<Entry>,
 };
 
+export const selectors = {
+  main: ({ todos }: State) => ({ todos }),
+};
+
 const initialState: State = {
   nextId: 0,
   todos: [],
 };
 
-export const selectors = {
-  main: ({ todos }: State) => ({ todos }),
-};
-
-const makeStateFunctions = (state: State) => ({
+export const { actions, stateDef } = makeStateDef('Todo', (state: State) => ({
   createTodo: () => {
     return {
       nextId: state.nextId + 1,
@@ -49,7 +47,4 @@ const makeStateFunctions = (state: State) => ({
       todos: newTodos,
     };
   },
-});
-
-export const stateDef = makeStateDef({ namespace, initialState, makeStateFunctions });
-export const { actions } = stateDef;
+}), initialState);

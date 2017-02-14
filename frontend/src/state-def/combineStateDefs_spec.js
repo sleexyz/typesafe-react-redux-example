@@ -1,3 +1,4 @@
+// @flow
 /* eslint no-unused-expressions: 0, no-unused-vars: 0 */
 import { assert } from 'chai';
 import { createStore } from 'redux';
@@ -12,10 +13,9 @@ type State2 = { stateDef2: number };
 
 // Works even without annotations
 () => {
-  const stateDef1 = makeStateDef({
-    namespace: 'stateDef1',
-    initialState: { stateDef1: 'hello' },
-    makeStateFunctions: (state) => ({
+  const { stateDef: stateDef1 } = makeStateDef(
+    'stateDef1',
+    (state) => ({
       replaceWith(x: string) {
         return { ...state, stateDef1: x };
       },
@@ -23,16 +23,17 @@ type State2 = { stateDef2: number };
         return { ...state, stateDef1: state.stateDef1 + x };
       },
     }),
-  });
-  const stateDef2 = makeStateDef({
-    namespace: 'stateDef2',
-    initialState: { stateDef2: 1 },
-    makeStateFunctions: (state) => ({
+    { stateDef1: 'hello' },
+  );
+  const { stateDef: stateDef2 } = makeStateDef(
+    'stateDef2',
+    (state) => ({
       incr() {
         return { ...state, stateDef2: state.stateDef2 + 1 };
       },
     }),
-  });
+    { stateDef2: 1 },
+  );
   const reducer = ReducerBuilder
     .init()
     .use(stateDef1)
@@ -51,53 +52,52 @@ type State2 = { stateDef2: number };
 */
 
 describe('ReducerBuilder', () => {
-  const Fixtures = {
-    stateDef1: makeStateDef({
-      namespace: 'stateDef1',
-      initialState: { stateDef1: 'hello' },
-      makeStateFunctions: (state) => ({
-        replaceWith(x: string) {
-          return { ...state, stateDef1: x };
-        },
-        append(x: string) {
-          return { ...state, stateDef1: state.stateDef1 + x };
-        },
-      }),
+  const { actions: actions1, stateDef: stateDef1 } = makeStateDef(
+    'stateDef1',
+    (state) => ({
+      replaceWith(x: string) {
+        return { ...state, stateDef1: x };
+      },
+      append(x: string) {
+        return { ...state, stateDef1: state.stateDef1 + x };
+      },
     }),
-    stateDef2: makeStateDef({
-      namespace: 'stateDef2',
-      initialState: { stateDef2: 1 },
-      makeStateFunctions: (state) => ({
-        incr() {
-          return { ...state, stateDef2: state.stateDef2 + 1 };
-        },
-      }),
+    { stateDef1: 'hello' },
+  );
+  const { actions: actions2, stateDef: stateDef2 } = makeStateDef(
+    'stateDef2',
+    (state) => ({
+      incr() {
+        return { ...state, stateDef2: state.stateDef2 + 1 };
+      },
     }),
-  };
+    { stateDef2: 1 },
+  );
   it('works with one stateDef', () => {
-    const { stateDef1 } = Fixtures;
     const reducer = ReducerBuilder
       .init()
       .use(stateDef1)
       .toReducer();
     const store = createStore(reducer);
-    store.dispatch(stateDef1.actions.replaceWith('world'));
+    store.dispatch(actions1.replaceWith('world'));
     assert.equal(store.getState().stateDef1, 'world');
-    store.dispatch(stateDef1.actions.append('world'));
+    store.dispatch(actions1.append('world'));
     assert.equal(store.getState().stateDef1, 'worldworld');
   });
 
   it('works with two stateDefs', () => {
-    const { stateDef1, stateDef2 } = Fixtures;
     const reducer = ReducerBuilder
       .init()
       .use(stateDef1)
       .use(stateDef2)
       .toReducer();
     const store = createStore(reducer);
-    store.dispatch(stateDef1.actions.replaceWith('world'));
+    store.dispatch(actions1.replaceWith('world'));
     assert.equal(store.getState().stateDef1, 'world');
-    store.dispatch(stateDef1.actions.append('world'));
+    store.dispatch(actions1.append('world'));
     assert.equal(store.getState().stateDef1, 'worldworld');
+    store.dispatch(actions2.incr());
+    assert.equal(store.getState().stateDef1, 'worldworld');
+    assert.equal(store.getState().stateDef2, 2);
   });
 });

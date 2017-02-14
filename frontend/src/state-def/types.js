@@ -29,6 +29,5 @@ export type $Reducer<State, StateFunctionMap> = Reducer<State, $Action<any, Stat
 export type $StateDef<State, StateFunctionMap> = {
   namespace: string,
   initializeState: State => State,
-  actions: $ActionsMap<State, StateFunctionMap>,
   reducer: $Reducer<State, StateFunctionMap>,
 };

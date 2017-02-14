@@ -8,6 +8,8 @@ import { makeStateDef } from './';
    Flowtype tests
 */
 
+// TODO: Rewrite tests:
+
 // makeStateDef's action state is consistent with inital state, for simple types
 // makeStateDef's action state is consistent with initial state, for complex object types
 // makeStateDef expects state to be returned in an action

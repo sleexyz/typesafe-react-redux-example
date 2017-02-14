@@ -54,28 +54,24 @@ const makeReducer =
     return reducer;
   };
 
-type $StateDefInput<State, StateFunctionMap> = {
-  namespace: string,
-  initialState: $Shape<State>,
-  makeStateFunctions: State => StateFunctionMap,
+type MakeStateDefOutput<State, StateFunctionMap> = {
+  stateDef: $StateDef<State, StateFunctionMap>,
+  actions: $ActionsMap<State, StateFunctionMap>,
 };
 
 const makeStateDef =
   <State, StateFunctionMap: $StateFunctionMap<State>>
   (
-   input: $StateDefInput<State, StateFunctionMap>,
-  ): $StateDef<State, StateFunctionMap> => {
-    const {
+    namespace: string,
+    makeStateFunctions: State => StateFunctionMap,
+    initialState: $Shape<State>,
+  ): MakeStateDefOutput<State, StateFunctionMap> => ({
+    stateDef: {
       namespace,
-      initialState,
-      makeStateFunctions,
-    } = input;
-    return {
-      namespace,
-      initializeState: makeInitializeState(initialState),
-      actions: makeActions(namespace, makeStateFunctions),
       reducer: makeReducer(namespace, makeStateFunctions),
-    };
-  };
+      initializeState: makeInitializeState(initialState),
+    },
+    actions: makeActions(namespace, makeStateFunctions),
+  });
 
 export default makeStateDef;
