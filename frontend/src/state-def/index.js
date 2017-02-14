@@ -1,6 +1,6 @@
 // @flow
 import makeStateDef from './makeStateDef';
-import ReducerBuilder from './combineStateDefs';
+import ReducerBuilder from './ReducerBuilder';
 
 export {
   makeStateDef,
