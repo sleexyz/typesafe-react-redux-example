@@ -1,4 +1,5 @@
 // @flow
+
 import type { Reducer } from 'redux';
 
 export type $StateFunction<State, Payload> = Payload => State;
@@ -30,7 +31,8 @@ export type $SelectorsMap<State> = {
 export type $Reducer<State, StateFunctionMap> = Reducer<State, $Action<any, StateFunctionMap>>;
 
 export type $StateDef<State, StateFunctionMap, SelectorsMap> = {
-  initialState: State,
+  namespace: string,
+  initializeState: State => State,
   actions: $ActionsMap<State, StateFunctionMap>,
   reducer: $Reducer<State, StateFunctionMap>,
   selectors: SelectorsMap,

@@ -1,109 +1,55 @@
 // @flow
 import type {
-  $Action,
-  $StateDef,
+  $Reducer,
 } from './types';
 
-type $StateDefMap = {
-  [key: string]: $StateDef<*, *, *>
+// Store-facing subtype of a StateDef:
+type StateDefView<State> = {
+  namespace: string,
+  reducer: $Reducer<State, *>,
+  initializeState: (State) => State,
 };
 
-type $ExtractActions =
-  <A>(v: { actions: A }) => A;
-
-type $ExtractState = <S>(v: { reducer: (state: S, action: $Action<*, *>) => S }) => S;
-
-type $CombinedState<O> = $ObjMap<O, $ExtractState>;
-
-type $ExtractSelector<O> =
-  <S>(v: { reducer: (state: S, action: $Action<*, *>) => S }) => $CombinedState<O> => S;
-
-type $CombinedAction = {type: *, payload?: *, error?: Error};
-
-type $CombinedStateDefs<O> = {
-  initialState: $CombinedState<O>,
-  actions: $ObjMap<O, $ExtractActions>,
-  reducer: (state: $ObjMap<O, $ExtractState>, action: $CombinedAction, error?: Error)
-    => $ObjMap<O, $ExtractState>,
-  selectors: $ObjMap<O, $ExtractSelector<O>>,
+type $ReducerBuilderConstructor<S> = {
+  initialState: S,
+  reducer: $Reducer<S, *>,
 };
 
-const makeInitialStateFromStateDefMap =
-  <StateDefMap: $StateDefMap>
-  (stateDefMap: StateDefMap): $ObjMap<StateDefMap, $ExtractState> => {
-    const namespaces = Object.keys(stateDefMap);
-    const state = {};
-    for (let i = 0; i < namespaces.length; i += 1) {
-      const ns = namespaces[i];
-      state[ns] = stateDefMap[ns].initialState;
-    }
-    return state;
-  };
-
-const makeNamespacedActionsFromStateDefMap =
-  <StateDefMap: $StateDefMap>
-  (stateDefMap: StateDefMap): $ObjMap<StateDefMap, $ExtractActions> => {
-    const namespacedActions = {};
-    const namespaces = Object.keys(stateDefMap);
-    for (let i = 0; i < namespaces.length; i += 1) {
-      const ns = namespaces[i];
-      const actions = stateDefMap[ns].actions;
-      const modifiedActions = {};
-      const keys = Object.keys(actions);
-      for (let j = 0; j < keys.length; j += 1) {
-        const key = keys[j];
-        modifiedActions[key] = (payload, error) => {
-          const action = actions[key](payload, error);
-          action.type = `${ns}/${key}`;
-          return action;
-        };
-      }
-      namespacedActions[ns] = modifiedActions;
-    }
-    return namespacedActions;
-  };
-
-const makeReducerFromStateDefMap =
-  <StateDefMap: $StateDefMap>
-  (stateDefMap: StateDefMap) =>
-    (rawState: $ObjMap<StateDefMap, $ExtractState>, action: $CombinedAction, error?: Error) => {
-      // initialize state
-      let state;
-      if (rawState == null) {
-        state = makeInitialStateFromStateDefMap(stateDefMap);
-      } else {
-        state = { ...rawState };
-      }
-      // set state
+export default class ReducerBuilder<S: {}> {
+  reducer: $Reducer<S, *>;
+  initialState: S;
+  constructor({ initialState, reducer }: $ReducerBuilderConstructor<S>) {
+    this.initialState = initialState;
+    this.reducer = reducer;
+  }
+  static init(): ReducerBuilder<{}> {
+    return new ReducerBuilder({
+      initialState: {},
+      reducer: (x) => x,
+    });
+  }
+  use<T: {}>(stateDefView: StateDefView<T>): ReducerBuilder<S & T> {
+    const { namespace, reducer, initializeState } = stateDefView;
+    // $ExpectError
+    const initialState = initializeState(this.initialState);
+    const newReducer = (state = initialState, action) => {
       const splitPoint = action.type.indexOf('/');
-      const ns = action.type.substr(0, splitPoint);
-      if (ns in stateDefMap) {
-        const rest = action.type.substr(splitPoint + 1);
-        state[ns] = stateDefMap[ns].reducer(state[ns], { ...action, type: rest }, error);
+      const expectedNamespace = action.type.substr(0, splitPoint);
+      if (namespace === expectedNamespace) {
+        // $ExpectError
+        return reducer(state, action);
       }
-      // return state
-      return state;
+      // $ExpectError
+      return this.reducer(state, action);
     };
-
-const makeSelectorsFromStateDefMap =
-  <StateDefMap: $StateDefMap>
-  (stateDefMap: StateDefMap) => {
-    const selectors = {};
-    const namespaces = Object.keys(stateDefMap);
-    for (let i = 0; i < namespaces.length; i += 1) {
-      const ns = namespaces[i];
-      selectors[ns] = (state) => state[ns];
-    }
-    return selectors;
-  };
-
-const combineStateDefs =
-  <StateDefMap: {}>
-  (stateDefMap: StateDefMap): $CombinedStateDefs<StateDefMap> => ({
-    initialState: makeInitialStateFromStateDefMap(stateDefMap),
-    actions: makeNamespacedActionsFromStateDefMap(stateDefMap),
-    reducer: makeReducerFromStateDefMap(stateDefMap),
-    selectors: makeSelectorsFromStateDefMap(stateDefMap),
-  });
-
-export default combineStateDefs;
+    // $ExpectError
+    return new ReducerBuilder({
+      // $ExpectError
+      initialState,
+      reducer: newReducer,
+    });
+  }
+  toReducer(): $Reducer<S, *> {
+    return this.reducer;
+  }
+}

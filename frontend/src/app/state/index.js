@@ -1,4 +1,3 @@
-// @flow
 import { combineStateDefs } from 'state-def';
 import Todo from './Todo';
 

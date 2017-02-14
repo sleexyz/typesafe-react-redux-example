@@ -1,4 +1,3 @@
-// @flow
 import { makeStateDef } from 'state-def';
 
 export type Entry = {

@@ -10,7 +10,10 @@ import type {
 
 const makeActions =
   <State, StateFunctionMap: $StateFunctionMap<State>>
-  (makeStateFunctionMap: State => StateFunctionMap): $ActionsMap<State, StateFunctionMap> => {
+  (
+    namespace: string,
+    makeStateFunctionMap: State => StateFunctionMap,
+  ): $ActionsMap<State, StateFunctionMap> => {
     const keys = Object.keys((makeStateFunctionMap: any)()); // eslint-disable-line flowtype/no-weak-types
     const actions = {};
     for (let i = 0; i < keys.length; i += 1) {
@@ -18,7 +21,7 @@ const makeActions =
       actions[key] = (payload, error) => ({
         error,
         payload,
-        type: key,
+        type: `${namespace}/${key}`,
       });
     }
     return actions;
@@ -26,17 +29,21 @@ const makeActions =
 
 const makeReducer =
   <State, StateFunctionMap: $StateFunctionMap<State>>
-  (initialState: State, makeStateFunctionMap: State => StateFunctionMap): $Reducer<State, StateFunctionMap> => {
+  (
+    namespace: string,
+    makeStateFunctionMap: State => StateFunctionMap,
+  ): $Reducer<State, StateFunctionMap> => {
     const stateFunctionMap = {};
     const keys = Object.keys((makeStateFunctionMap: any)()); // eslint-disable-line flowtype/no-weak-types
     for (let i = 0; i < keys.length; i += 1) {
       const key = keys[i];
       stateFunctionMap[key] = (state, payload, error) => makeStateFunctionMap(state)[key](payload, error);
     }
-    const reducer = (state = initialState, { type, payload, error }) => {
+    const reducer = (state, { type, payload, error }) => {
       for (let i = 0; i < keys.length; i += 1) {
         const key = keys[i];
-        if (key === type) {
+        const expectedType = `${namespace}/${keys[i]}`;
+        if (expectedType === type) {
           return stateFunctionMap[key](state, payload, error);
         }
       }
@@ -46,7 +53,8 @@ const makeReducer =
   };
 
 type $StateDefInput<State, StateFunctionMap, SelectorsMap> = {
-  initialState: State,
+  namespace: string,
+  initializeState: State => State,
   makeStateFunctions: State => StateFunctionMap,
   selectors: SelectorsMap,
 };
@@ -57,15 +65,17 @@ const makeStateDef =
    input: $StateDefInput<State, StateFunctionMap, SelectorsMap>,
   ): $StateDef<State, StateFunctionMap, SelectorsMap> => {
     const {
-      initialState,
+      namespace,
+      initializeState,
       makeStateFunctions,
       selectors,
     } = input;
     return {
-      initialState,
+      namespace,
+      initializeState,
       selectors,
-      actions: makeActions(makeStateFunctions),
-      reducer: makeReducer(initialState, makeStateFunctions),
+      actions: makeActions(namespace, makeStateFunctions),
+      reducer: makeReducer(namespace, makeStateFunctions),
     };
   };
 

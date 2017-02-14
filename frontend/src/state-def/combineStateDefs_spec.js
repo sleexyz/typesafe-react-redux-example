@@ -2,241 +2,107 @@
 /* eslint no-unused-expressions: 0, no-unused-vars: 0 */
 import { assert } from 'chai';
 import { createStore } from 'redux';
-import { combineStateDefs, makeStateDef } from './';
+import { makeStateDef, ReducerBuilder } from './'; import type { $Reducer } from './types';
+
+type State1 = { stateDef1: string };
+type State2 = { stateDef2: number };
 
 /*
    Flowtype tests
 */
 
-// Namespaced actions must enforce existence statically
+// Works even without annotations
 () => {
-  const FooStateDef = makeStateDef({
-    initialState: 'hello',
-    makeStateFunctions: (state: string) => ({
-      hello() { return state + state; },
+  const stateDef1 = makeStateDef({
+    namespace: 'stateDef1',
+    initializeState: (state) => ({ ...state, stateDef1: 'hello' }),
+    makeStateFunctions: (state) => ({
+      replaceWith(x: string) {
+        return { ...state, stateDef1: x };
+      },
+      append(x: string) {
+        return { ...state, stateDef1: state.stateDef1 + x };
+      },
     }),
     selectors: {},
   });
-  const BarStateDef = makeStateDef({
-    initialState: 1,
-    makeStateFunctions: (state: number) => ({
-      world() { return state + 2; },
+  const stateDef2 = makeStateDef({
+    namespace: 'stateDef2',
+    initializeState: (state) => ({ ...state, stateDef2: 1 }),
+    makeStateFunctions: (state) => ({
+      incr() {
+        return { ...state, stateDef2: state.stateDef2 + 1 };
+      },
     }),
     selectors: {},
   });
-  const combinedStateDef = combineStateDefs({
-    foo: FooStateDef,
-    bar: BarStateDef,
-  });
-  const { reducer, actions } = combinedStateDef;
+  const reducer = ReducerBuilder
+    .init()
+    .use(stateDef1)
+    .use(stateDef2)
+    .toReducer();
   const store = createStore(reducer);
-  store.dispatch(actions.foo.hello());
+  store.getState().stateDef1;
+  (store.getState().stateDef1: string);
+  (store.getState().stateDef2: number);
   // $ExpectError
-  store.dispatch(actions.foo.helloo());
-  // $ExpectError
-  store.dispatch(actions.fxoo.hello());
-};
-
-// Namespaced actions must enforce proper usage statically
-() => {
-  const FooStateDef = makeStateDef({
-    initialState: 'hello',
-    makeStateFunctions: (state: string) => ({
-      hello(x: number) { return x.toString() + state; },
-    }),
-    selectors: {},
-  });
-  const BarStateDef = makeStateDef({
-    initialState: 1,
-    makeStateFunctions: (state: number) => ({
-      world() { return state + 2; },
-    }),
-    selectors: {},
-  });
-  const combinedStateDef = combineStateDefs({
-    foo: FooStateDef,
-    bar: BarStateDef,
-  });
-  const { reducer, actions } = combinedStateDef;
-  const store = createStore(reducer);
-  store.dispatch(actions.foo.hello(1));
-  // $ExpectError
-  store.dispatch(actions.foo.hello('hello'));
-};
-
-// Namespaced actions must enforce proper usage statically, even with potential clashing
-() => {
-  const FooStateDef = makeStateDef({
-    initialState: 'hello',
-    makeStateFunctions: (state: string) => ({
-      hello(x: number) { return x.toString() + state; },
-    }),
-    selectors: {},
-  });
-  const BarStateDef = makeStateDef({
-    initialState: 1,
-    makeStateFunctions: (state: number) => ({
-      hello(x: string) { return state + x.length; },
-    }),
-    selectors: {},
-  });
-  const combinedStateDef = combineStateDefs({
-    foo: FooStateDef,
-    bar: BarStateDef,
-  });
-  const { reducer, actions } = combinedStateDef;
-  const store = createStore(reducer);
-  store.dispatch(actions.foo.hello(1));
-  store.dispatch(actions.bar.hello('hello'));
-  // $ExpectError
-  store.dispatch(actions.bar.hello(1));
-  // $ExpectError
-  store.dispatch(actions.foo.hello('hello'));
-};
-
-// Redux's store.getState enforces the right shape
-() => {
-  const FooStateDef = makeStateDef({
-    initialState: 'hello',
-    makeStateFunctions: (state: string) => ({
-      hello(x: number) { return x.toString() + state; },
-    }),
-    selectors: {},
-  });
-  const BarStateDef = makeStateDef({
-    initialState: 1,
-    makeStateFunctions: (state: number) => ({
-      hello(x: string) { return state + x.length; },
-    }),
-    selectors: {},
-  });
-  const combinedStateDef = combineStateDefs({
-    foo: FooStateDef,
-    bar: BarStateDef,
-  });
-  const { reducer, actions } = combinedStateDef;
-  const store = createStore(reducer);
-  (store.getState().foo: string);
-  (store.getState().bar: number);
-  // $ExpectError
-  (store.getState().foo: number);
-  // $ExpectError
-  (store.getState().bar: string);
-};
-
-// Selectors enforce the right shape
-() => {
-  const FooStateDef = makeStateDef({
-    initialState: 'hello',
-    makeStateFunctions: (state: string) => ({
-      hello(x: number) { return x.toString() + state; },
-    }),
-    selectors: {},
-  });
-  const BarStateDef = makeStateDef({
-    initialState: 1,
-    makeStateFunctions: (state: number) => ({
-      hello(x: string) { return state + x.length; },
-    }),
-    selectors: {},
-  });
-  const combinedStateDef = combineStateDefs({
-    foo: FooStateDef,
-    bar: BarStateDef,
-  });
-  const { reducer, actions, selectors } = combinedStateDef;
-  const store = createStore(reducer);
-  (selectors.foo(store.getState()): string);
-  (selectors.bar(store.getState()): number);
-  // $ExpectError
-  (selectors.foo(store.getState()): number);
-  // $ExpectError
-  (selectors.bar(store.getState()): string);
+  (store.getState().stateDef1: number);
 };
 
 /*
    Runtime tests
 */
 
-describe('combineStateDefs', () => {
-  it('works with no action clashes', () => {
-    const FooStateDef = makeStateDef({
-      initialState: 'hello',
-      makeStateFunctions: (state: string) => ({
-        hello() { return state + state; },
+describe('ReducerBuilder', () => {
+  const Fixtures = {
+    stateDef1: makeStateDef({
+      namespace: 'stateDef1',
+      initializeState: (state) => ({ ...state, stateDef1: 'hello' }),
+      makeStateFunctions: (state) => ({
+        replaceWith(x: string) {
+          return { ...state, stateDef1: x };
+        },
+        append(x: string) {
+          return { ...state, stateDef1: state.stateDef1 + x };
+        },
       }),
       selectors: {},
-    });
-    const BarStateDef = makeStateDef({
-      initialState: 1,
-      makeStateFunctions: (state: number) => ({
-        world() { return state + 2; },
+    }),
+    stateDef2: makeStateDef({
+      namespace: 'stateDef2',
+      initializeState: (state) => ({ ...state, stateDef2: 1 }),
+      makeStateFunctions: (state) => ({
+        incr() {
+          return { ...state, stateDef2: state.stateDef2 + 1 };
+        },
       }),
       selectors: {},
-    });
-    const combinedStateDef = combineStateDefs({
-      foo: FooStateDef,
-      bar: BarStateDef,
-    });
-    const { reducer, actions } = combinedStateDef;
+    }),
+  };
+  it('works with one stateDef', () => {
+    const { stateDef1 } = Fixtures;
+    const reducer = ReducerBuilder
+      .init()
+      .use(stateDef1)
+      .toReducer();
     const store = createStore(reducer);
-    assert.deepEqual({ foo: 'hello', bar: 1 }, store.getState());
-    store.dispatch(actions.foo.hello());
-    assert.deepEqual({ foo: 'hellohello', bar: 1 }, store.getState());
-    store.dispatch(actions.bar.world());
-    assert.deepEqual({ foo: 'hellohello', bar: 3 }, store.getState());
+    store.dispatch(stateDef1.actions.replaceWith('world'));
+    assert.equal(store.getState().stateDef1, 'world');
+    store.dispatch(stateDef1.actions.append('world'));
+    assert.equal(store.getState().stateDef1, 'worldworld');
   });
 
-  it('works even with action name clashes', () => {
-    const FooStateDef = makeStateDef({
-      initialState: 'hello',
-      makeStateFunctions: (state: string) => ({
-        hello(payload: string) { return state + payload; },
-      }),
-      selectors: {},
-    });
-    const BarStateDef = makeStateDef({
-      initialState: 1,
-      makeStateFunctions: (state: number) => ({
-        hello() { return state + 2; },
-      }),
-      selectors: {},
-    });
-    const combinedStateDef = combineStateDefs({
-      foo: FooStateDef,
-      bar: BarStateDef,
-    });
-    const { reducer, actions } = combinedStateDef;
+  it('works with two stateDefs', () => {
+    const { stateDef1, stateDef2 } = Fixtures;
+    const reducer = ReducerBuilder
+      .init()
+      .use(stateDef1)
+      .use(stateDef2)
+      .toReducer();
     const store = createStore(reducer);
-    assert.deepEqual({ foo: 'hello', bar: 1 }, store.getState());
-    store.dispatch(actions.foo.hello('asdf'));
-    assert.deepEqual({ foo: 'helloasdf', bar: 1 }, store.getState());
-    store.dispatch(actions.bar.hello());
-    assert.deepEqual({ foo: 'helloasdf', bar: 3 }, store.getState());
-  });
-
-  it('returns working selectors', () => {
-    const FooStateDef = makeStateDef({
-      initialState: 'hello',
-      makeStateFunctions: (state: string) => ({
-        hello() { return state + state; },
-      }),
-      selectors: {},
-    });
-    const BarStateDef = makeStateDef({
-      initialState: 1,
-      makeStateFunctions: (state: number) => ({
-        hello() { return state + 2; },
-      }),
-      selectors: {},
-    });
-    const combinedStateDef = combineStateDefs({
-      foo: FooStateDef,
-      bar: BarStateDef,
-    });
-    const { reducer, actions, selectors } = combinedStateDef;
-    const store = createStore(reducer);
-    assert.equal('hello', selectors.foo(store.getState()));
-    assert.equal(1, selectors.bar(store.getState()));
+    store.dispatch(stateDef1.actions.replaceWith('world'));
+    assert.equal(store.getState().stateDef1, 'world');
+    store.dispatch(stateDef1.actions.append('world'));
+    assert.equal(store.getState().stateDef1, 'worldworld');
   });
 });
