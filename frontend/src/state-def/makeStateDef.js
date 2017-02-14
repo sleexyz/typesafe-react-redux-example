@@ -1,7 +1,7 @@
 // @flow
 /* eslint max-len: 0 */
 import type {
-  $StateFunctionMap,
+  $ProtoActions,
   $ActionsMap,
   $Reducer,
   $StateDef,
@@ -11,12 +11,9 @@ import type {
 const makeInitializeState = <State: {}>(initialState: $Shape<State>) => (state: State): State => ({ ...state, ...initialState });
 
 const makeActions =
-  <State, StateFunctionMap: $StateFunctionMap<State>>
-  (
-    namespace: string,
-    makeStateFunctionMap: State => StateFunctionMap,
-  ): $ActionsMap<State, StateFunctionMap> => {
-    const keys = Object.keys((makeStateFunctionMap: any)()); // eslint-disable-line flowtype/no-weak-types
+  <State, ProtoActions: $ProtoActions<State>>
+  (namespace: string, protoActions: ProtoActions): $ActionsMap<State, ProtoActions> => {
+    const keys = Object.keys(protoActions);
     const actions = {};
     for (let i = 0; i < keys.length; i += 1) {
       const key = keys[i];
@@ -30,23 +27,15 @@ const makeActions =
   };
 
 const makeReducer =
-  <State, StateFunctionMap: $StateFunctionMap<State>>
-  (
-    namespace: string,
-    makeStateFunctionMap: State => StateFunctionMap,
-  ): $Reducer<State, StateFunctionMap> => {
-    const stateFunctionMap = {};
-    const keys = Object.keys((makeStateFunctionMap: any)()); // eslint-disable-line flowtype/no-weak-types
-    for (let i = 0; i < keys.length; i += 1) {
-      const key = keys[i];
-      stateFunctionMap[key] = (state, payload, error) => makeStateFunctionMap(state)[key](payload, error);
-    }
+  <State, ProtoActions: $ProtoActions<State>>
+  (namespace: string, protoActions: ProtoActions): $Reducer<State, ProtoActions> => {
+    const keys = Object.keys(protoActions);
     const reducer = (state, { type, payload, error }) => {
       for (let i = 0; i < keys.length; i += 1) {
         const key = keys[i];
         const expectedType = `${namespace}/${keys[i]}`;
         if (expectedType === type) {
-          return stateFunctionMap[key](state, payload, error);
+          return protoActions[key](payload, error)(state);
         }
       }
       return state;
@@ -54,24 +43,24 @@ const makeReducer =
     return reducer;
   };
 
-type MakeStateDefOutput<State, StateFunctionMap> = {
-  stateDef: $StateDef<State, StateFunctionMap>,
-  actions: $ActionsMap<State, StateFunctionMap>,
+type MakeStateDefOutput<State, ProtoActions> = {
+  stateDef: $StateDef<State, ProtoActions>,
+  actions: $ActionsMap<State, ProtoActions>,
 };
 
 const makeStateDef =
-  <State, StateFunctionMap: $StateFunctionMap<State>>
+  <State, ProtoActions: $ProtoActions<State>>
   (
     namespace: string,
-    makeStateFunctions: State => StateFunctionMap,
+    protoActions: ProtoActions,
     initialState: $Shape<State>,
-  ): MakeStateDefOutput<State, StateFunctionMap> => ({
+  ): MakeStateDefOutput<State, ProtoActions> => ({
     stateDef: {
       namespace,
-      reducer: makeReducer(namespace, makeStateFunctions),
+      reducer: makeReducer(namespace, protoActions),
       initializeState: makeInitializeState(initialState),
     },
-    actions: makeActions(namespace, makeStateFunctions),
+    actions: makeActions(namespace, protoActions),
   });
 
 export default makeStateDef;

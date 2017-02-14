@@ -2,32 +2,32 @@
 
 import type { Reducer } from 'redux';
 
-export type $StateFunction<State, Payload> = Payload => State;
+export type $ProtoAction<State, Payload> = Payload => State => State;
 
-export type $StateFunctionMap<State> = {
-  [key: string]: * => State,
+export type $ProtoActions<State> = {
+  [key: string]: * => State => State,
 };
 
-export type $Action<Payload, StateFunctionMap> = {
-  type: $Keys<StateFunctionMap>,
+export type $Action<Payload, ProtoActions> = {
+  type: $Keys<ProtoActions>,
   payload?: Payload,
   error?: Error,
 };
 
-export type $ActionCreator<Payload, StateFunctionMap> =
-  (payload?: Payload, error?: Error) => $Action<Payload, StateFunctionMap>;
+export type $ActionCreator<Payload, ProtoActions> =
+  (payload?: Payload, error?: Error) => $Action<Payload, ProtoActions>;
 
-export type $ActionsMap<State, StateFunctionMap> =
-  $ObjMap<StateFunctionMap, $ExtractActionCreator<State, StateFunctionMap>>;
+export type $ActionsMap<State, ProtoActions> =
+  $ObjMap<ProtoActions, $ExtractActionFromProtoAction<State, ProtoActions>>;
 
-type $ExtractActionCreator<State, StateFunctionMap> =
-  <Payload>(v: $StateFunction<State, Payload>) => $ActionCreator<Payload, StateFunctionMap>
+type $ExtractActionFromProtoAction<State, ProtoActions> =
+  <Payload>(v: $ProtoAction<State, Payload>) => $ActionCreator<Payload, ProtoActions>
 
 // eslint-disable-next-line flowtype/no-weak-types
-export type $Reducer<State, StateFunctionMap> = Reducer<State, $Action<any, StateFunctionMap>>;
+export type $Reducer<State, ProtoActions> = Reducer<State, $Action<any, ProtoActions>>;
 
-export type $StateDef<State, StateFunctionMap> = {
+export type $StateDef<State, ProtoActions> = {
   namespace: string,
   initializeState: State => State,
-  reducer: $Reducer<State, StateFunctionMap>,
+  reducer: $Reducer<State, ProtoActions>,
 };

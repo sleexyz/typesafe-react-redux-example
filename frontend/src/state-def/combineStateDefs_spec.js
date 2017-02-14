@@ -13,25 +13,25 @@ type State2 = { stateDef2: number };
 
 // Works even without annotations
 () => {
-  const { stateDef: stateDef1 } = makeStateDef(
+  const { actions: actions1, stateDef: stateDef1 } = makeStateDef(
     'stateDef1',
-    (state) => ({
-      replaceWith(x: string) {
+    {
+      replaceWith: (x: string) => (state) => {
         return { ...state, stateDef1: x };
       },
-      append(x: string) {
+      append: (x: string) => (state) => {
         return { ...state, stateDef1: state.stateDef1 + x };
       },
-    }),
+    },
     { stateDef1: 'hello' },
   );
-  const { stateDef: stateDef2 } = makeStateDef(
+  const { actions: actions2, stateDef: stateDef2 } = makeStateDef(
     'stateDef2',
-    (state) => ({
-      incr() {
+    {
+      incr: () => (state) => {
         return { ...state, stateDef2: state.stateDef2 + 1 };
       },
-    }),
+    },
     { stateDef2: 1 },
   );
   const reducer = ReducerBuilder
@@ -54,23 +54,23 @@ type State2 = { stateDef2: number };
 describe('ReducerBuilder', () => {
   const { actions: actions1, stateDef: stateDef1 } = makeStateDef(
     'stateDef1',
-    (state) => ({
-      replaceWith(x: string) {
+    {
+      replaceWith: (x: string) => (state) => {
         return { ...state, stateDef1: x };
       },
-      append(x: string) {
+      append: (x: string) => (state) => {
         return { ...state, stateDef1: state.stateDef1 + x };
       },
-    }),
+    },
     { stateDef1: 'hello' },
   );
   const { actions: actions2, stateDef: stateDef2 } = makeStateDef(
     'stateDef2',
-    (state) => ({
-      incr() {
+    {
+      incr: () => (state) => {
         return { ...state, stateDef2: state.stateDef2 + 1 };
       },
-    }),
+    },
     { stateDef2: 1 },
   );
   it('works with one stateDef', () => {

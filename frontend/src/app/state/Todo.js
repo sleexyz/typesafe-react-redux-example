@@ -20,8 +20,8 @@ const initialState: State = {
   todos: [],
 };
 
-export const { actions, stateDef } = makeStateDef('Todo', (state: State) => ({
-  createTodo: () => {
+export const { actions, stateDef } = makeStateDef('Todo', {
+  createTodo: () => (state) => {
     return {
       nextId: state.nextId + 1,
       todos: [
@@ -30,7 +30,7 @@ export const { actions, stateDef } = makeStateDef('Todo', (state: State) => ({
       ],
     };
   },
-  removeTodo: (index: number) => {
+  removeTodo: (index: number) => (state) => {
     const newTodos = [...state.todos];
     newTodos.splice(index, 1);
     return {
@@ -38,7 +38,7 @@ export const { actions, stateDef } = makeStateDef('Todo', (state: State) => ({
       todos: newTodos,
     };
   },
-  updateTodo: ({ index, value }: { index: number, value: string }) => {
+  updateTodo: ({ index, value }: { index: number, value: string }) => (state) => {
     const newTodos = [...state.todos];
     const oldTodo = state.todos[index];
     newTodos.splice(index, 1, { ...oldTodo, value });
@@ -47,4 +47,4 @@ export const { actions, stateDef } = makeStateDef('Todo', (state: State) => ({
       todos: newTodos,
     };
   },
-}), initialState);
+}, initialState);
