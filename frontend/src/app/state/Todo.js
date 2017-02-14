@@ -1,3 +1,4 @@
+// TODO: switch back to initial state
 import { makeStateDef } from 'state-def';
 
 export type Entry = {
@@ -44,8 +45,11 @@ const makeStateFunctions = (state: State) => ({
   },
 });
 
-const selectors = {
-  getTodo: (i: number) => (state: State) => state.todos[i],
-};
+const selectors = {};
 
-export default makeStateDef({ initialState, makeStateFunctions, selectors });
+export default makeStateDef({
+  namespace: 'Todo',
+  initialState,
+  makeStateFunctions,
+  selectors,
+});
