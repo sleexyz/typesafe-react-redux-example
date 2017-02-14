@@ -1,6 +1,6 @@
 [ignore]
+.*/node_modules/styled-components/src/.*test.js
 .*/node_modules/styled-components/src/test
-.*/node_modules/styled-components/src/constructors/test
 .*/node_modules/styled-components/flow-typed/npm/express
 .*/node_modules/styled-components/dangerfile.js
 ./**/gen
