@@ -1,17 +1,17 @@
 // @flow
 import React from 'react';
 import { dispatch } from 'app/redux';
-import { actions } from 'app/state';
+import { actions } from 'app/state/Todo';
 import type { Entry } from 'app/state/Todo';
 
 const editTodo = (index) => (e) => {
   const value = e.target.value;
-  dispatch(actions.Todo.updateTodo({ index, value }));
-  dispatch(actions.Todo.updateTodo({ index, value }));
+  dispatch(actions.updateTodo({ index, value }));
+  dispatch(actions.updateTodo({ index, value }));
 };
 
 const closeTodo = (index) => () => {
-  dispatch(actions.Todo.removeTodo(index));
+  dispatch(actions.removeTodo(index));
 };
 
 const TodoListEntry = ({ value, index }: Entry & { index: number }) => (
