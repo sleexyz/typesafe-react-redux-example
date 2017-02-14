@@ -26,7 +26,7 @@ type $ExtractActionFromProtoAction<State, ProtoActions> =
 // eslint-disable-next-line flowtype/no-weak-types
 export type $Reducer<State, ProtoActions> = Reducer<State, $Action<any, ProtoActions>>;
 
-export type $StateDef<State, ProtoActions> = {
+export type $StateDef<State: {}, ProtoActions> = {
   namespace: string,
   initializeState: State => State,
   reducer: $Reducer<State, ProtoActions>,

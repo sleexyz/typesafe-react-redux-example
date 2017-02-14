@@ -1,5 +1,4 @@
 // @flow
-/* eslint max-len: 0 */
 import type {
   $ProtoActions,
   $ActionsMap,
@@ -7,8 +6,10 @@ import type {
   $StateDef,
 } from './types';
 
-// $ExpectError
-const makeInitializeState = <State: {}>(initialState: $Shape<State>) => (state: State): State => ({ ...state, ...initialState });
+const makeInitializeState =
+  <State: {}>(initialState: State) =>
+    <SuperState: $Supertype<State>>(state: SuperState): SuperState =>
+      ({ ...state, ...initialState });
 
 const makeActions =
   <State, ProtoActions: $ProtoActions<State>>
@@ -49,7 +50,7 @@ type MakeStateDefOutput<State, ProtoActions> = {
 };
 
 const makeStateDef =
-  <State, ProtoActions: $ProtoActions<State>>
+  <State: {}, ProtoActions: $ProtoActions<State>>
   (
     namespace: string,
     initialState: $Shape<State>,

@@ -36,7 +36,6 @@ export default class ReducerBuilder<S: {}> {
       const splitPoint = action.type.indexOf('/');
       const expectedNamespace = action.type.substr(0, splitPoint);
       if (namespace === expectedNamespace) {
-        // $ExpectError
         return reducer(state, action);
       }
       // $ExpectError
