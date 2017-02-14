@@ -52,8 +52,8 @@ const makeStateDef =
   <State, ProtoActions: $ProtoActions<State>>
   (
     namespace: string,
-    protoActions: ProtoActions,
     initialState: $Shape<State>,
+    protoActions: ProtoActions,
   ): MakeStateDefOutput<State, ProtoActions> => ({
     stateDef: {
       namespace,
