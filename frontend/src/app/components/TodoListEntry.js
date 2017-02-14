@@ -41,7 +41,7 @@ const makeNewRow = (e) => {
 
 const TodoListEntry = ({ value, index }: Entry & { index: number }) => (
   <Row>
-    <Close onClick={closeTodo(index)} >(x)</Close>
+    <Close onClick={closeTodo(index)} >x</Close>
     <Input
       autoFocus
       value={value}

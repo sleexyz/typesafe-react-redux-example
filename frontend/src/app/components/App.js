@@ -11,7 +11,7 @@ display: flex;
 flex-direction: column;
 justify-content: center;
 align-items: center;
-filter: drop-shadow(.25rem .25rem 2rem ${colors.blue});
+filter: drop-shadow(.25rem .25rem 1.75rem ${colors.blue});
 `;
 
 const AppInner = styled.div`
