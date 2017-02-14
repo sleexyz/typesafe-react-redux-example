@@ -2,11 +2,11 @@
 import React from 'react';
 import { connect, dispatch } from 'app/redux';
 import type { State } from 'app/state/Todo';
-import { actions, selectors } from 'app/state'; // TODO: get actions and selectors from Todo;
+import { actions, selectors } from 'app/state/Todo';
 import TodoListEntry from 'app/components/TodoListEntry';
 
 const addOnClick = () => {
-  dispatch(actions.Todo.createTodo());
+  dispatch(actions.createTodo());
 };
 
 const TodoList = ({ todos }: State) => (
@@ -17,4 +17,4 @@ const TodoList = ({ todos }: State) => (
   </div>
 );
 
-export default connect(selectors.Todo)(TodoList);
+export default connect(selectors.main)(TodoList);

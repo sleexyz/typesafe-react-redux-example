@@ -5,8 +5,10 @@ import type {
   $ActionsMap,
   $Reducer,
   $StateDef,
-  $SelectorsMap,
 } from './types';
+
+// $ExpectError
+const makeInitializeState = <State: {}>(initialState: $Shape<State>) => (state: State): State => ({ ...state, ...initialState });
 
 const makeActions =
   <State, StateFunctionMap: $StateFunctionMap<State>>
@@ -52,28 +54,25 @@ const makeReducer =
     return reducer;
   };
 
-type $StateDefInput<State, StateFunctionMap, SelectorsMap> = {
+type $StateDefInput<State, StateFunctionMap> = {
   namespace: string,
-  initializeState: State => State,
+  initialState: $Shape<State>,
   makeStateFunctions: State => StateFunctionMap,
-  selectors: SelectorsMap,
 };
 
 const makeStateDef =
-  <State, StateFunctionMap: $StateFunctionMap<State>, SelectorsMap: $SelectorsMap<State>>
+  <State, StateFunctionMap: $StateFunctionMap<State>>
   (
-   input: $StateDefInput<State, StateFunctionMap, SelectorsMap>,
-  ): $StateDef<State, StateFunctionMap, SelectorsMap> => {
+   input: $StateDefInput<State, StateFunctionMap>,
+  ): $StateDef<State, StateFunctionMap> => {
     const {
       namespace,
-      initializeState,
+      initialState,
       makeStateFunctions,
-      selectors,
     } = input;
     return {
       namespace,
-      initializeState,
-      selectors,
+      initializeState: makeInitializeState(initialState),
       actions: makeActions(namespace, makeStateFunctions),
       reducer: makeReducer(namespace, makeStateFunctions),
     };

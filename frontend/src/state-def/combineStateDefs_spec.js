@@ -1,4 +1,3 @@
-// @flow
 /* eslint no-unused-expressions: 0, no-unused-vars: 0 */
 import { assert } from 'chai';
 import { createStore } from 'redux';
@@ -15,7 +14,7 @@ type State2 = { stateDef2: number };
 () => {
   const stateDef1 = makeStateDef({
     namespace: 'stateDef1',
-    initializeState: (state) => ({ ...state, stateDef1: 'hello' }),
+    initialState: { stateDef1: 'hello' },
     makeStateFunctions: (state) => ({
       replaceWith(x: string) {
         return { ...state, stateDef1: x };
@@ -24,17 +23,15 @@ type State2 = { stateDef2: number };
         return { ...state, stateDef1: state.stateDef1 + x };
       },
     }),
-    selectors: {},
   });
   const stateDef2 = makeStateDef({
     namespace: 'stateDef2',
-    initializeState: (state) => ({ ...state, stateDef2: 1 }),
+    initialState: { stateDef2: 1 },
     makeStateFunctions: (state) => ({
       incr() {
         return { ...state, stateDef2: state.stateDef2 + 1 };
       },
     }),
-    selectors: {},
   });
   const reducer = ReducerBuilder
     .init()
@@ -57,7 +54,7 @@ describe('ReducerBuilder', () => {
   const Fixtures = {
     stateDef1: makeStateDef({
       namespace: 'stateDef1',
-      initializeState: (state) => ({ ...state, stateDef1: 'hello' }),
+      initialState: { stateDef1: 'hello' },
       makeStateFunctions: (state) => ({
         replaceWith(x: string) {
           return { ...state, stateDef1: x };
@@ -66,17 +63,15 @@ describe('ReducerBuilder', () => {
           return { ...state, stateDef1: state.stateDef1 + x };
         },
       }),
-      selectors: {},
     }),
     stateDef2: makeStateDef({
       namespace: 'stateDef2',
-      initializeState: (state) => ({ ...state, stateDef2: 1 }),
+      initialState: { stateDef2: 1 },
       makeStateFunctions: (state) => ({
         incr() {
           return { ...state, stateDef2: state.stateDef2 + 1 };
         },
       }),
-      selectors: {},
     }),
   };
   it('works with one stateDef', () => {

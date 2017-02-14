@@ -23,17 +23,12 @@ export type $ActionsMap<State, StateFunctionMap> =
 type $ExtractActionCreator<State, StateFunctionMap> =
   <Payload>(v: $StateFunction<State, Payload>) => $ActionCreator<Payload, StateFunctionMap>
 
-export type $SelectorsMap<State> = {
-  [key: string]: * => State => *,
-};
-
 // eslint-disable-next-line flowtype/no-weak-types
 export type $Reducer<State, StateFunctionMap> = Reducer<State, $Action<any, StateFunctionMap>>;
 
-export type $StateDef<State, StateFunctionMap, SelectorsMap> = {
+export type $StateDef<State, StateFunctionMap> = {
   namespace: string,
   initializeState: State => State,
   actions: $ActionsMap<State, StateFunctionMap>,
   reducer: $Reducer<State, StateFunctionMap>,
-  selectors: SelectorsMap,
 };

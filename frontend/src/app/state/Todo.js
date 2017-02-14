@@ -1,5 +1,7 @@
-// TODO: switch back to initial state
+// @flow
 import { makeStateDef } from 'state-def';
+
+export const namespace = 'Todo';
 
 export type Entry = {
   value: string,
@@ -9,15 +11,19 @@ export type Entry = {
 export type State = {
   nextId: number,
   todos: Array<Entry>,
-}
+};
 
 const initialState: State = {
   nextId: 0,
   todos: [],
 };
 
+export const selectors = {
+  main: ({ todos }: State) => ({ todos }),
+};
+
 const makeStateFunctions = (state: State) => ({
-  createTodo() {
+  createTodo: () => {
     return {
       nextId: state.nextId + 1,
       todos: [
@@ -26,7 +32,7 @@ const makeStateFunctions = (state: State) => ({
       ],
     };
   },
-  removeTodo(index: number) {
+  removeTodo: (index: number) => {
     const newTodos = [...state.todos];
     newTodos.splice(index, 1);
     return {
@@ -34,7 +40,7 @@ const makeStateFunctions = (state: State) => ({
       todos: newTodos,
     };
   },
-  updateTodo({ index, value }: { index: number, value: string }) {
+  updateTodo: ({ index, value }: { index: number, value: string }) => {
     const newTodos = [...state.todos];
     const oldTodo = state.todos[index];
     newTodos.splice(index, 1, { ...oldTodo, value });
@@ -45,11 +51,5 @@ const makeStateFunctions = (state: State) => ({
   },
 });
 
-const selectors = {};
-
-export default makeStateDef({
-  namespace: 'Todo',
-  initialState,
-  makeStateFunctions,
-  selectors,
-});
+export const stateDef = makeStateDef({ namespace, initialState, makeStateFunctions });
+export const { actions } = stateDef;
