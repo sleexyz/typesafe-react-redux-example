@@ -15,14 +15,15 @@ const logger = createLogger({
   diff: true,
 });
 
-const store = createStore(
+// TODO: make this function fancier...
+const makeStore = () => createStore(
   reducer,
   applyMiddleware(
     logger,
   ),
 );
 
-export default store;
+export default makeStore;
 
 if (module.hot) {
   // eslint-disable-next-line flowtype/no-weak-types

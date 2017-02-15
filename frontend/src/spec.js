@@ -1,5 +1,4 @@
+import 'source-map-support/register';
+
 const context = require.context('./', true, /_spec.js/);
-context.keys().forEach((key) => {
-  const requireWithContext = context;
-  requireWithContext(key);
-});
+context.keys().forEach(context);

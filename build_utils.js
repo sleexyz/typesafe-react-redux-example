@@ -1,6 +1,5 @@
 // @flow
 const path = require('path');
-const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
 
@@ -29,7 +28,13 @@ module.exports = {
         'node_modules',
       ],
     },
-    externals: [nodeExternals()],
+    externals: [
+      {
+        'react/addons': 'true',
+        'react/lib/ExecutionEnvironment': 'true',
+        'react/lib/ReactContext': 'true',
+      },
+    ],
   },
 
   webpackLoaderRules: {

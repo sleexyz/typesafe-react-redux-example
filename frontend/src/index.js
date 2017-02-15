@@ -3,7 +3,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import App from 'app/components/App';
-import store from 'app/store';
+import makeStore from 'app/store';
+
+// Global Store
+const store = makeStore();
 
 const renderApp = () => {
   ReactDOM.render(
