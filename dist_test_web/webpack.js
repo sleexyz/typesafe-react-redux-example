@@ -8,11 +8,12 @@ const {
 } = require('../build_utils');
 
 module.exports = {
+  devtool: 'cheap-module-source-map',
   entry: [
-    `mocha-loader!${path.resolve(sourcePaths.frontend, 'spec.js')}`,
+    `mocha-loader!${path.resolve(sourcePaths.frontend, 'spec_web.js')}`,
     'webpack-hot-middleware/client',
   ],
-  externals: undefined,
+  externals: webpackBaseConfig.externals,
   module: {
     rules: [
       webpackLoaderRules.js,
@@ -22,6 +23,10 @@ module.exports = {
     filename: 'index.js',
     path: path.resolve(__dirname, 'src'),
     publicPath: '/gen/',
+  },
+  node: {
+    fs: 'empty',
+    module: 'empty',
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

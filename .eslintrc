@@ -20,6 +20,7 @@
     "import/prefer-default-export": 0,
     "no-multiple-empty-lines": [2, {"max": 1}],
     "react/jsx-filename-extension": [0, { "extensions": [".js"] }],
+    "react/prefer-stateless-function": 0,
   },
   "settings": {
     "import/resolver": {

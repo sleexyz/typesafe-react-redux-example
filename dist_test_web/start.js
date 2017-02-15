@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const webpackDev = require('webpack-dev-middleware');
 const webpackHot = require('webpack-hot-middleware');
 const express = require('express');
+const serveStatic = require('serve-static');
 const path = require('path');
 const config = require('./webpack');
 const { portMap } = require('../build_utils.js');
@@ -17,6 +18,7 @@ app.use(webpackDev(compiler, {
   stats: 'errors-only',
 }));
 app.use(webpackHot(compiler));
+app.use(serveStatic(path.resolve(__dirname, 'src')));
 app.use('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'src/index.html'));
 });

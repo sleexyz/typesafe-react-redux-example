@@ -1,5 +1,6 @@
 // @flow
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 const {
   sourcePaths,
   webpackBaseConfig,
@@ -7,10 +8,14 @@ const {
 } = require('../build_utils');
 
 module.exports = {
+  devtool: 'cheap-module-source-map',
   entry: [
-    path.resolve(sourcePaths.frontend, 'spec.js'),
+    path.resolve(sourcePaths.frontend, 'spec_node.js'),
   ],
-  externals: webpackBaseConfig.externals,
+  externals: [
+    ...webpackBaseConfig.externals,
+    nodeExternals(),
+  ],
   module: {
     rules: [
       webpackLoaderRules.js,
