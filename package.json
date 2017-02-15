@@ -50,6 +50,6 @@
   "scripts": {
     "test": "yarn run lint && flow && yarn run test-node",
     "test-node": "./dist_test_node/build.js && mocha dist_test_node/src/gen/index.js",
-    "lint": "eslint .",
+    "lint": "eslint ."
   }
 }
