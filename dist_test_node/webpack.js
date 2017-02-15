@@ -10,7 +10,7 @@ const {
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: [
-    path.resolve(sourcePaths.frontend, 'spec.js'),
+    path.resolve(sourcePaths.frontend, 'spec_node.js'),
   ],
   externals: [
     ...webpackBaseConfig.externals,

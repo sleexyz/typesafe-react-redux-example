@@ -29,6 +29,7 @@
     "eslint-plugin-react": "^6.9.0",
     "express": "^4.14.0",
     "flow-bin": "^0.39.0",
+    "jsdom": "^9.11.0",
     "mocha": "^3.2.0",
     "mocha-loader": "^1.1.0",
     "react-addons-test-utils": "^15.4.2",

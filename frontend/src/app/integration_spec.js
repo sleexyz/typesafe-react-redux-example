@@ -2,9 +2,10 @@
 
 import { expect } from 'chai';
 import React from 'react';
+import { createStore } from 'redux';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
-import makeStore from 'app/store';
+import reducer from 'app/reducer';
 import App from 'app/components/App';
 
 import TodoListEntry, {
@@ -13,8 +14,9 @@ import TodoListEntry, {
 } from 'app/components/TodoListEntry';
 
 const makeRoot = () => {
+  const store = createStore(reducer);
   return (
-    <Provider store={makeStore()}>
+    <Provider store={store}>
       <App />
     </Provider>
   );

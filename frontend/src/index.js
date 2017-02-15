@@ -2,11 +2,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { applyMiddleware, createStore } from 'redux';
+import createLogger from 'redux-logger';
 import App from 'app/components/App';
-import makeStore from 'app/store';
+import reducer from 'app/reducer';
 
-// Global Store
-const store = makeStore();
+const store = createStore(reducer, applyMiddleware(
+  createLogger({ timestamp: false, collapsed: true, diff: true }),
+));
 
 const renderApp = () => {
   ReactDOM.render(
