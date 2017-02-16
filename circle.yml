@@ -15,6 +15,7 @@ dependencies:
   override:
     - (cd backend ; stack --no-terminal setup)
     - (cd backend ; stack --no-terminal build --test --only-dependencies -j1)
+    - stack --no-terminal install hlint
     - yarn install
 test:
   override:
