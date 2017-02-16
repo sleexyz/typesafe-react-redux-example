@@ -1,6 +1,6 @@
 name: app
 version: 0.1.0.0
-ghc-options: -Wall
+ghc-options: -Wall -Werror
 dependencies:
   - aeson
   - aeson-pretty

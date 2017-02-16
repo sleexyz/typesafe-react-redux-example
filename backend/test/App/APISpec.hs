@@ -1,6 +1,5 @@
 {-# LANGUAGE ImplicitParams #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE RankNTypes #-}
@@ -65,10 +64,10 @@ spec = do
         checkWithMockDB mockDB $ \Check{..} -> do
           TestPOST "/todos" dummyTodoA ==> \res -> do
             C.responseStatus res `shouldBe` HTTP.status200
-            C.responseBody res `shouldBe` (encode ("0" :: String))
+            C.responseBody res `shouldBe` encode ("0" :: String)
           TestPOST "/todos" dummyTodoB ==> \res -> do
             C.responseStatus res `shouldBe` HTTP.status200
-            C.responseBody res `shouldBe` (encode ("1" :: String))
+            C.responseBody res `shouldBe` encode ("1" :: String)
           TestGET "/todos/0" ==> \res -> do
             C.responseBody res `shouldBe` encode dummyTodoA
           TestGET "/todos/1" ==> \res -> do
@@ -81,7 +80,7 @@ spec = do
         checkWithMockDB mockDB $ \Check{..} -> do
           TestDELETE "/todos/0"  ==> \res -> do
             C.responseStatus res `shouldBe` HTTP.status200
-            C.responseBody res `shouldBe` (encode("0" :: String))
+            C.responseBody res `shouldBe` encode("0" :: String)
           TestGET "/todos/0" ==> \res -> do
             C.responseStatus res `shouldBe` HTTP.status404
 
@@ -91,12 +90,12 @@ spec = do
       it "should work" $ do
         checkWithMockDB mockDB $ \Check{..} -> do
           TestGET "/todos/0" ==> \res -> do
-            C.responseBody res `shouldBe` (encode dummyTodoA)
+            C.responseBody res `shouldBe` encode dummyTodoA
           TestPUT "/todos/0" dummyTodoB  ==> \res -> do
             C.responseStatus res `shouldBe` HTTP.status200
-            C.responseBody res `shouldBe` (encode dummyTodoB)
+            C.responseBody res `shouldBe` encode dummyTodoB
           TestGET "/todos/0" ==> \res -> do
-            C.responseBody res `shouldBe` (encode dummyTodoB)
+            C.responseBody res `shouldBe` encode dummyTodoB
 
 -- * Utilities
 
@@ -106,7 +105,7 @@ data TestReq =
   | forall a. (ToJSON a) => TestPUT { path :: String, requestBody :: a}
   | forall a. (ToJSON a) => TestPOST { path :: String, requestBody :: a}
 
-data Check = Check {
+newtype Check = Check {
   (==>) :: (?loc :: CallStack)
     => TestReq
     -> (C.Response BSL8.ByteString -> IO ())

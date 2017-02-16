@@ -6,12 +6,10 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module App.API where
 
-import           Control.Lens hiding ((.=), elements)
 import           Control.Concurrent.MVar
 import           Control.Monad.IO.Class
 import           Data.HashMap.Lazy (HashMap)
 import qualified Data.HashMap.Lazy as HashMap
-import           Network.Wai
 import           Servant
 
 import           App.Types
@@ -21,8 +19,6 @@ import           App.Model
 
 appApi :: Proxy AppAPI
 appApi = Proxy
-
--- TODO: add delete
 
 type AppAPI =
   "todos" :> (
@@ -74,13 +70,13 @@ makeEndpoints db = do
         MkMockDB { todos } <- liftIO $ readMVar dbRef
         case HashMap.lookup todoId todos of
           Nothing -> throwError err404
-          Just todo -> liftIO $ modifyMVar dbRef $ return . dbDeleteTodo todoId
+          Just _ -> liftIO $ modifyMVar dbRef $ return . dbDeleteTodo todoId
 
       updateTodo :: TodoId -> Todo -> Handler Todo
       updateTodo todoId todo = do
         MkMockDB { todos } <- liftIO $ readMVar dbRef
         case HashMap.lookup todoId todos of
           Nothing -> throwError err404
-          Just oldTodo -> liftIO $ modifyMVar dbRef $ return . dbUpdateTodo todoId todo
+          Just _ -> liftIO $ modifyMVar dbRef $ return . dbUpdateTodo todoId todo
 
-  return $ Endpoints {..}
+  return Endpoints {..}

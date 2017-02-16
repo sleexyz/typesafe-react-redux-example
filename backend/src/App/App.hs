@@ -16,7 +16,7 @@ import           App.Model
 
 swagger :: Swagger
 swagger = toSwagger appApi
-  & set (host) (Just "localhost:8000")
+  & set host (Just "localhost:8000")
   & set (info . title) "App API"
   & set (info . description) (Just "App API")
 

@@ -14,7 +14,7 @@ import           Test.QuickCheck.Instances ()
 
 -- * Datatypes:
 
-data Todo = MkTodo {
+newtype Todo = MkTodo {
   value :: String
 } deriving (Show, Generic, Typeable)
 
