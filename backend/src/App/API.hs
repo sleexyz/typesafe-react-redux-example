@@ -30,13 +30,15 @@ type AppAPI =
     :<|> Get '[JSON] (HashMap TodoId Todo)
     :<|> Capture "id" TodoId :> Get '[JSON] Todo
     :<|> Capture "id" TodoId :> Delete '[JSON] TodoId
+    :<|> Capture "id" TodoId :> ReqBody '[JSON] Todo :> Put '[JSON] Todo
   )
 
 data Endpoints = Endpoints {
   createTodo :: Todo -> Handler TodoId,
   findTodo :: TodoId -> Handler Todo,
   fetchTodos :: Handler (HashMap TodoId Todo),
-  deleteTodo :: TodoId -> Handler TodoId
+  deleteTodo :: TodoId -> Handler TodoId,
+  updateTodo :: TodoId -> Todo -> Handler Todo
 }
 
 toAppServer :: Endpoints -> Server AppAPI
@@ -45,6 +47,7 @@ toAppServer Endpoints{..} =
   :<|> fetchTodos
   :<|> findTodo
   :<|> deleteTodo
+  :<|> updateTodo
 
 -- * Endpoints
 
@@ -72,5 +75,12 @@ makeEndpoints db = do
         case HashMap.lookup todoId todos of
           Nothing -> throwError err404
           Just todo -> liftIO $ modifyMVar dbRef $ return . dbDeleteTodo todoId
+
+      updateTodo :: TodoId -> Todo -> Handler Todo
+      updateTodo todoId todo = do
+        MkMockDB { todos } <- liftIO $ readMVar dbRef
+        case HashMap.lookup todoId todos of
+          Nothing -> throwError err404
+          Just oldTodo -> liftIO $ modifyMVar dbRef $ return . dbUpdateTodo todoId todo
 
   return $ Endpoints {..}
