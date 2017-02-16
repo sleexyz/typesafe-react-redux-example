@@ -1,6 +1,6 @@
 machine:
   environment:
-    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+    PATH: "${PATH}:${HOME}/.local/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   node:
     version: 6.9.5
 dependencies:
@@ -8,6 +8,7 @@ dependencies:
     - ~/.stack
     - ./backend/.stack-work
     - ~/.cache/yarn
+    - ~/.local
   pre:
     - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442
     - echo 'deb http://download.fpcomplete.com/ubuntu trusty main' | sudo tee /etc/apt/sources.list.d/fpco.list
