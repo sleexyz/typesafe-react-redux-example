@@ -18,7 +18,7 @@ main = do
   putStrLn "Writing ./swagger.json"
   BSL8.writeFile "./swagger.json" $ encodePretty App.swagger
   putStrLn "Running on port 8000"
-  let mockDB@App.MkMockDB { App.todos } = App.dbEmpty
+  let mockDB = App.dbEmpty
   app <- App.app mockDB
   run 8000 $ app
     & logStdoutDev
