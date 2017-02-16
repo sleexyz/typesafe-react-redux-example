@@ -1,0 +1,45 @@
+name: app
+version: 0.1.0.0
+ghc-options: -Wall -Werror
+dependencies:
+  - aeson
+  - aeson-pretty
+  - base
+  - bytestring
+  - hashable
+  - http-client
+  - http-types
+  - lens
+  - QuickCheck
+  - quickcheck-instances
+  - servant
+  - servant-server
+  - servant-swagger
+  - servant-swagger-ui
+  - swagger2
+  - text
+  - transformers
+  - unordered-containers
+  - wai
+  - warp
+
+library:
+  source-dirs: src/
+
+executables:
+  server:
+    main: Main.hs
+    source-dirs: server/
+    dependencies:
+      - app 
+      - wai-cors
+      - wai-extra
+
+tests:
+  spec:
+    main: test.hs
+    source-dirs: test/
+    dependencies:
+      - app
+      - hspec
+      - hspec-discover

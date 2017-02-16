@@ -1,3 +1,24 @@
 machine:
+  environment:
+    PATH: "${PATH}:${HOME}/.local/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   node:
     version: 6.9.5
+dependencies:
+  cache_directories:
+    - ~/.stack
+    - ./backend/.stack-work
+    - ~/.cache/yarn
+    - ~/.local
+  pre:
+    - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442
+    - echo 'deb http://download.fpcomplete.com/ubuntu trusty main' | sudo tee /etc/apt/sources.list.d/fpco.list
+    - sudo apt-get update && sudo apt-get install stack -y
+  override:
+    - (cd backend ; stack --no-terminal setup)
+    - (cd backend ; stack --no-terminal build --test --only-dependencies -j1)
+    - stack --no-terminal install hlint
+    - yarn install
+test:
+  override:
+    - ./backend/test.sh
+    - yarn test
