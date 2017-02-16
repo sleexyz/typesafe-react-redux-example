@@ -13,8 +13,8 @@ dependencies:
     - echo 'deb http://download.fpcomplete.com/ubuntu trusty main' | sudo tee /etc/apt/sources.list.d/fpco.list
     - sudo apt-get update && sudo apt-get install stack -y
   override:
-    - stack --no-terminal setup
-    - stack --no-terminal build --test --only-dependencies -j1
+    - (cd backend ; stack --no-terminal setup)
+    - (cd backend ; stack --no-terminal build --test --only-dependencies -j1)
     - yarn install
 test:
   override:
