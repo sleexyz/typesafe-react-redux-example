@@ -44,39 +44,3 @@ In this example project, we choose the convention of placing all generated code 
     └── src
        └── gen/
 ```
-
-### StateDefs
-
-StateDefs are units of data that describe:
-
-1. the types of state
-2. how state is initialized
-3. elementary, synchronous methods that modify those actions
-
-An object with StateDef values can be transformed into a single, StateDefCollection with `combineStateDefs`. (TODO: document once API is settled down)
-
-For those familiar with Redux, a StateDef is a unit of data that subsumes:
-
-1. Redux Store Types
-2. Redux Store initial state
-3. Redux Reducers
-4. Redux Actions
-5. Redux Action Constants
-6. An elementary, synchronous subset of Redux Action Creators
-7. Redux Selectors (TODO: implement)
-
-### Other Architectural Decisions
-
-#### 1) Import `dispatch` directly
-Many of Redux + React-Redux's design decisions stem from the requirement of server-side rendering.
-For example, that's why [`dispatch` is always inject via props](http://stackoverflow.com/questions/33221634/why-use-this-props-dispatch-rather-than-store-dispatch-directly-in-redux).
-If we're never going to do server rendering, then we shouldn't make sacrifices for it.
-
-Note: we still use `Provider` and `connect` to make components reactive to changes to the store.
-
-#### 2) Unconstrained Component Hierarchy
-We should expand our palette of ultra-dumb, reusable components as much we can.
-
-But there's no benefit to putting a constraint on the structure of component *hierarchies*; namely, a constraint that only top-level components should be connected to Redux.
-Constraining state-awareness to top-level components is unscalable for complex UI's with multiple *intrinsically* state-aware parts.
-We want to be as close to the store as we can and minimize the amount of props we need to pass around, by emphasizing *selectors* over manual *state* injection via props.
