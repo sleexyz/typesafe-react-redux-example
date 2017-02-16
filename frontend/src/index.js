@@ -6,6 +6,7 @@ import { applyMiddleware, createStore } from 'redux';
 import createLogger from 'redux-logger';
 import App from 'app/components/App';
 import reducer from 'app/reducer';
+import 'app/effects';
 
 const store = createStore(reducer, applyMiddleware(
   createLogger({ timestamp: false, collapsed: true, diff: true }),

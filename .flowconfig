@@ -35,3 +35,6 @@ unsafe.enable_getters_and_setters=true
 module.system.node.resolve_dirname=frontend/src
 module.system.node.resolve_dirname=node_modules
 suppress_comment=\\(.\\|\n\\)*\\$ExpectError
+
+[version]
+0.39.0

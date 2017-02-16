@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import type { State } from 'app/state/Todo';
-import { TodoLens } from 'app/state/Todo';
+import type { State } from 'app/model/Todo';
+import { TodoLens } from 'app/model/Todo';
 import TodoListEntry from 'app/components/TodoListEntry';
 
 const TodoList = ({ todos }: State) => {

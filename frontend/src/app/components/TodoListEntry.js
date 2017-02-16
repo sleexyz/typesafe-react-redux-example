@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { actions } from 'app/state/Todo';
-import type { Entry } from 'app/state/Todo';
+import { actions } from 'app/model/Todo';
+import type { Entry } from 'app/model/Todo';
 import { Button, colors } from 'app/styles';
 
 export const Close = styled.button`

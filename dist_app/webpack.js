@@ -9,6 +9,7 @@ const {
 
 module.exports = {
   entry: [
+    'babel-polyfill',
     path.resolve(sourcePaths.frontend, 'index.js'),
     'webpack-hot-middleware/client',
   ],

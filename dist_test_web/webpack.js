@@ -10,6 +10,7 @@ const {
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: [
+    'babel-polyfill',
     `mocha-loader!${path.resolve(sourcePaths.frontend, 'spec_web.js')}`,
     'webpack-hot-middleware/client',
   ],
