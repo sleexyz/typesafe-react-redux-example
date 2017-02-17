@@ -2,11 +2,12 @@
 import * as Typesafe from 'typesafe-redux';
 import * as Todo from 'app/model/Todo';
 
-export type Type = {
+export type State = {
   Todo: Todo.State,
 };
 
-export const reducer = Typesafe.ReducerBuilder
-  .init()
-  .use(Todo.stateDef)
-  .toReducer();
+export const reducer: Typesafe.$Reducer<State> =
+  Typesafe.ReducerCombiner
+    .init()
+    .use(Todo.modelDef)
+    .toReducer();

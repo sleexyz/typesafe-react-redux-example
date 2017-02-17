@@ -1,0 +1,13 @@
+// @flow
+import * as Ship from 'redux-ship';
+
+type $RawEffects = {
+  [key: string]: * => Promise<*>
+};
+
+type $ExtractShip<Effect> = <P, O>(v: P => Promise<O>) => (P => Ship.Ship<Effect, *, *, O>)
+
+declare export default function makeEffects<Effect, O: $RawEffects>(o: O): {
+  effects: $ObjMap<O, $ExtractShip<Effect>>,
+  run: Effect => any | Promise<any>
+}

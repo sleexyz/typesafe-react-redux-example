@@ -1,7 +1,9 @@
+// TODO: fix
+
 /* eslint no-unused-expressions: 0, no-unused-vars: 0 */
 import { assert } from 'chai';
 import { createStore } from 'redux';
-import { makeStateDef, ReducerBuilder } from './'; import type { $Reducer } from './types';
+import { makeStateDef, ReducerBuilder } from './';
 
 type State1 = { stateDef1: string };
 type State2 = { stateDef2: number };

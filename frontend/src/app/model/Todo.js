@@ -1,6 +1,8 @@
 // @flow
-import { makeStateDef } from 'typesafe-redux';
-import { makeLenses } from 'lens';
+import * as Typesafe from 'typesafe-redux';
+
+// TODO: derive model schema from swagger
+const namespace = 'Todo';
 
 export type Entry = {
   value: string,
@@ -12,21 +14,18 @@ export type State = {
   todos: Array<Entry>,
 };
 
-export type Slice = { Todo: State };
-
-const initialSlice: Slice = {
-  Todo: {
-    nextId: 1,
-    todos: [
-      { value: '', id: 0 },
-    ],
-  },
+const initialState: State = {
+  nextId: 1,
+  todos: [
+    { value: '', id: 0 },
+  ],
 };
 
-export const { Todo: lens } = makeLenses(initialSlice);
+export const lens: Typesafe.$Lens<{ Todo: State}, State> = Typesafe.makePropertyLens('Todo');
 
 const rawCommits = {
-  createTodo: () => lens.edit((state: State) => {
+
+  createTodo: () => (state: State) => {
     return {
       nextId: state.nextId + 1,
       todos: [
@@ -34,23 +33,19 @@ const rawCommits = {
         { value: '', id: state.nextId },
       ],
     };
-  }),
-  removeTodo: (index: number) => (slice: Slice) => {
-    if (lens.view(slice).todos.length === 1) {
-      const newSlice = rawCommits.removeTodoInternal(index)(slice);
-      return rawCommits.createTodo(index)(newSlice);
-    }
-    return rawCommits.removeTodoInternal(index)(slice);
   },
-  removeTodoInternal: (index: number) => lens.edit((state: State) => {
+
+  removeTodo: (index: number) => (state: State) => {
     const newTodos = [...state.todos];
     newTodos.splice(index, 1);
     return {
       ...state,
       todos: newTodos,
     };
-  }),
-  updateTodo: ({ index, value }) => lens.edit((state: State) => {
+  },
+
+  updateTodo: (params: {| index: number, value: string |}) => (state: State) => {
+    const { index, value } = params;
     const newTodos = [...state.todos];
     const oldTodo = state.todos[index];
     newTodos.splice(index, 1, { ...oldTodo, value });
@@ -58,7 +53,13 @@ const rawCommits = {
       ...state,
       todos: newTodos,
     };
-  }),
+  },
+
 };
 
-export const { commits, stateDef } = makeStateDef('Todo', initialSlice, rawCommits);
+export const { commits, modelDef } = Typesafe.makeModelDef({
+  namespace,
+  lens,
+  initialState,
+  rawCommits,
+});
