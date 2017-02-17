@@ -23,10 +23,10 @@ const initialSlice: Slice = {
   },
 };
 
-export const { Todo: TodoLens } = makeLenses(initialSlice);
+export const { Todo: lens } = makeLenses(initialSlice);
 
 const reducers = {
-  createTodo: () => TodoLens.edit((state: State) => {
+  createTodo: () => lens.edit((state: State) => {
     return {
       nextId: state.nextId + 1,
       todos: [
@@ -36,13 +36,13 @@ const reducers = {
     };
   }),
   removeTodo: (index: number) => (slice: Slice) => {
-    if (TodoLens.view(slice).todos.length === 1) {
+    if (lens.view(slice).todos.length === 1) {
       const newSlice = reducers.removeTodoInternal(index)(slice);
       return reducers.createTodo(index)(newSlice);
     }
     return reducers.removeTodoInternal(index)(slice);
   },
-  removeTodoInternal: (index: number) => TodoLens.edit((state: State) => {
+  removeTodoInternal: (index: number) => lens.edit((state: State) => {
     const newTodos = [...state.todos];
     newTodos.splice(index, 1);
     return {
@@ -50,7 +50,7 @@ const reducers = {
       todos: newTodos,
     };
   }),
-  updateTodo: ({ index, value }) => TodoLens.edit((state: State) => {
+  updateTodo: ({ index, value }) => lens.edit((state: State) => {
     const newTodos = [...state.todos];
     const oldTodo = state.todos[index];
     newTodos.splice(index, 1, { ...oldTodo, value });

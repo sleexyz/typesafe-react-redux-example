@@ -1,25 +1,55 @@
 // @flow
 
-import * as Ship from 'redux-ship';
 import fetch from 'isomorphic-fetch';
-import * as Todo from 'app/model/Todo';
+import * as Ship from 'redux-ship';
 
-// idea: define controller and effect type in tandem
+/*
+   Util
+*/
 
-const sto = (n) => new Promise((res) => {
-  setTimeout(res, n);
-});
+type $EffectMap = {
+  [key: string]: * => Promise<*>
+};
 
-export async function run(effect: *) {
-  const res = await fetch('http://localhost:8000/todos');
-  const text = await res.text();
-  await sto(1000);
-  console.log(text);
-  await sto(1000);
-  console.log(text);
-  await sto(1000);
-  console.log(text);
-  return text;
+const makeRunEffects = <O: $EffectMap>(effects: O) => async function (effect: *) {
+  if (effect.type in effects) {
+    return effects[effect.type](effect);
+  }
+  return null;
+};
+
+const makeEffectActions = <O: $EffectMap>(effects: O) => {
+  const effectMap = {};
+  const keys = Object.keys(effects);
+  for (let i = 0; i < keys.length; i += 1) {
+    const key = keys[i];
+    effectMap[key] = (payload) => Ship.call({
+      payload,
+      type: key,
+    });
+  }
+  return effectMap;
+};
+
+type $MakeEffectsOutput<O> = {
+  effects: $ObjMap<O, <V>(v: V) => *>,
+  runEffects: *,
 }
 
-run();
+const makeEffects = <O: $EffectMap>(effects: O): $MakeEffectsOutput<O> => ({
+  effects: makeEffectActions(effects),
+  runEffects: makeRunEffects(effects),
+});
+
+/*
+   Code
+*/
+
+const rawEffects = {
+  fetch,
+  wait: (n) => new Promise((res) => {
+    setTimeout(res, n);
+  }),
+};
+
+export const { effects, runEffects } = makeEffects(rawEffects);

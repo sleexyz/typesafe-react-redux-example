@@ -1,5 +1,5 @@
 {
-  "name": "registry",
+  "name": "typesafe-react-redux-example",
   "version": "0.0.1",
   "description": "codebase registry",
   "main": "index.js",
@@ -49,7 +49,8 @@
     "react-redux": "^5.0.2",
     "redux": "^3.6.0",
     "redux-logger": "^2.8.1",
-    "redux-ship": "^0.1.3",
+    "redux-ship": "sleexyz/redux-ship#sleexyz/flow-0.39#37fbe285c0e5dda904f320d37de683470747ac96",
+    "redux-ship-logger": "^0.1.1",
     "styled-components": "^1.4.3"
   },
   "scripts": {

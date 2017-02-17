@@ -5,7 +5,7 @@ import React from 'react';
 import { createStore } from 'redux';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
-import reducer from 'app/reducer';
+import * as Model from 'app/model';
 import App from 'app/components/App';
 
 import TodoListEntry, {
@@ -14,7 +14,7 @@ import TodoListEntry, {
 } from 'app/components/TodoListEntry';
 
 const makeRoot = () => {
-  const store = createStore(reducer);
+  const store = createStore(Model.reducer);
   return (
     <Provider store={store}>
       <App />
