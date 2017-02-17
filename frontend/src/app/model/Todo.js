@@ -1,5 +1,5 @@
 // @flow
-import { makeStateDef } from 'state-def';
+import { makeStateDef } from 'typesafe-redux';
 import { makeLenses } from 'lens';
 
 export type Entry = {
@@ -25,7 +25,7 @@ const initialSlice: Slice = {
 
 export const { Todo: lens } = makeLenses(initialSlice);
 
-const reducers = {
+const rawCommits = {
   createTodo: () => lens.edit((state: State) => {
     return {
       nextId: state.nextId + 1,
@@ -37,10 +37,10 @@ const reducers = {
   }),
   removeTodo: (index: number) => (slice: Slice) => {
     if (lens.view(slice).todos.length === 1) {
-      const newSlice = reducers.removeTodoInternal(index)(slice);
-      return reducers.createTodo(index)(newSlice);
+      const newSlice = rawCommits.removeTodoInternal(index)(slice);
+      return rawCommits.createTodo(index)(newSlice);
     }
-    return reducers.removeTodoInternal(index)(slice);
+    return rawCommits.removeTodoInternal(index)(slice);
   },
   removeTodoInternal: (index: number) => lens.edit((state: State) => {
     const newTodos = [...state.todos];
@@ -61,4 +61,4 @@ const reducers = {
   }),
 };
 
-export const { actions, stateDef } = makeStateDef('Todo', initialSlice, reducers);
+export const { commits, stateDef } = makeStateDef('Todo', initialSlice, rawCommits);

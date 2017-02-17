@@ -4,22 +4,23 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import createLogger from 'redux-logger';
+import * as ShipDevTools from 'redux-ship-devtools';
 import * as Ship from 'redux-ship';
+import * as ShipLogger from 'redux-ship-logger';
+
 import App from 'app/components/App';
 import * as Model from 'app/model';
 import * as Effects from 'app/effects';
-import * as Controller from 'app/controllers';
-import { logControl } from 'redux-ship-logger';
+import * as Actions from 'app/actions';
 
 const store = createStore(Model.reducer, applyMiddleware(
-  Ship.middleware(Effects.runEffects, Controller.runAsyncActions),
+  Ship.middleware(Effects.run, Actions.run),
   createLogger({ timestamp: false, collapsed: true, diff: true }),
 ));
 
-// $ExpectError
-() => Ship.run(Effects.runEffects, store, logControl(Controller.runAsyncActions)(Controller.asyncActions.fo()));
+const runActions = ShipDevTools.inspect(ShipLogger.logControl(Actions.run));
 
-Ship.run(Effects.runEffects, store, logControl(Controller.runAsyncActions)(Controller.asyncActions.foo()));
+Ship.run(Effects.run, store, runActions(Actions.actions.displayWelcome()));
 
 const renderApp = () => {
   ReactDOM.render(

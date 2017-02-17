@@ -1,42 +1,43 @@
 // @flow
 import type {
-  $ProtoActions,
-  $ActionsMap,
+  $ProtoCommits,
+  $CommitsMap,
   $Reducer,
   $StateDef,
 } from './types';
 
+// FIXME: Supertype is essentially any...
 const makeInitializeState =
   <State: {}>(initialState: State) =>
     <SuperState: $Supertype<State>>(state: SuperState): SuperState =>
       ({ ...state, ...initialState });
 
-const makeActions =
-  <State, ProtoActions: $ProtoActions<State>>
-  (namespace: string, protoActions: ProtoActions): $ActionsMap<State, ProtoActions> => {
-    const keys = Object.keys(protoActions);
-    const actions = {};
+const makeCommits =
+  <State, ProtoCommits: $ProtoCommits<State>>
+  (namespace: string, protoCommits: ProtoCommits): $CommitsMap<State, ProtoCommits> => {
+    const keys = Object.keys(protoCommits);
+    const commits = {};
     for (let i = 0; i < keys.length; i += 1) {
       const key = keys[i];
-      actions[key] = (payload, error) => ({
+      commits[key] = (payload, error) => ({
         error,
         payload,
         type: `${namespace}/${key}`,
       });
     }
-    return actions;
+    return commits;
   };
 
 const makeReducer =
-  <State, ProtoActions: $ProtoActions<State>>
-  (namespace: string, protoActions: ProtoActions): $Reducer<State, ProtoActions> => {
-    const keys = Object.keys(protoActions);
+  <State, ProtoCommits: $ProtoCommits<State>>
+  (namespace: string, protoCommits: ProtoCommits): $Reducer<State> => {
+    const keys = Object.keys(protoCommits);
     const reducer = (state, { type, payload, error }) => {
       for (let i = 0; i < keys.length; i += 1) {
         const key = keys[i];
         const expectedType = `${namespace}/${keys[i]}`;
         if (expectedType === type) {
-          return protoActions[key](payload, error)(state);
+          return protoCommits[key](payload, error)(state);
         }
       }
       return state;
@@ -44,24 +45,24 @@ const makeReducer =
     return reducer;
   };
 
-type MakeStateDefOutput<State, ProtoActions> = {
-  stateDef: $StateDef<State, ProtoActions>,
-  actions: $ActionsMap<State, ProtoActions>,
+type MakeStateDefOutput<State, ProtoCommits> = {
+  stateDef: $StateDef<State>,
+  commits: $CommitsMap<State, ProtoCommits>,
 };
 
 const makeStateDef =
-  <State: {}, ProtoActions: $ProtoActions<State>>
+  <State: {}, ProtoCommits: $ProtoCommits<State>>
   (
     namespace: string,
     initialState: $Shape<State>,
-    protoActions: ProtoActions,
-  ): MakeStateDefOutput<State, ProtoActions> => ({
+    protoCommits: ProtoCommits,
+  ): MakeStateDefOutput<State, ProtoCommits> => ({
     stateDef: {
       namespace,
-      reducer: makeReducer(namespace, protoActions),
+      reducer: makeReducer(namespace, protoCommits),
       initializeState: makeInitializeState(initialState),
     },
-    actions: makeActions(namespace, protoActions),
+    commits: makeCommits(namespace, protoCommits),
   });
 
 export default makeStateDef;

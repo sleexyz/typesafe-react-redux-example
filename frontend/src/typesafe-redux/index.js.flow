@@ -1,0 +1,43 @@
+// @flow
+import makeStateDef from './makeStateDef';
+import ReducerBuilder from './ReducerBuilder.js';
+import * as Ship from 'redux-ship';
+import type {
+  $Reducer,
+  $ProtoCommits,
+  $CommitsMap,
+  $StateDef,
+} from './types';
+
+export {
+  makeStateDef,
+  ReducerBuilder,
+};
+
+/*
+   makeActions
+*/
+
+type $Actions = {
+  [key: string]: any => void => Ship.Ship<*, *, any, *>
+};
+
+declare export function makeActions<O: $Actions, Effect, Commit, State>(actions: O): {
+  run: * => Ship.Ship<Effect, Commit, State, void>,
+  actions: $ObjMap<O, (v: * => void => Ship.Ship<Effect, Commit, State, *>) => *>,
+}
+
+/*
+   makeEffects
+*/
+
+type $RawEffects = {
+  [key: string]: * => Promise<*>
+};
+
+type $ExtractShip<Effect> = <P, O>(v: P => Promise<O>) => (P => Ship.Ship<Effect, *, *, O>)
+
+declare export function makeEffects<Effect, O: $RawEffects>(o: O): {
+  effects: $ObjMap<O, $ExtractShip<Effect>>,
+  run: Effect => any | Promise<any>
+}

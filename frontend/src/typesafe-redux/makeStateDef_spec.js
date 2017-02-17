@@ -1,4 +1,3 @@
-// @flow
 /* eslint no-unused-expressions: 0, no-unused-vars: 0, max-len: 0 */
 import { assert } from 'chai';
 import { createStore } from 'redux';

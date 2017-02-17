@@ -3,20 +3,22 @@ import type {
   $Reducer,
 } from './types';
 
+// TODO: delete typings
+
 // Store-facing subtype of a StateDef:
 type StateDefView<State> = {
   namespace: string,
-  reducer: $Reducer<State, *>,
+  reducer: $Reducer<State>,
   initializeState: (State) => State,
 };
 
 type $ReducerBuilderConstructor<S> = {
   initialState: S,
-  reducer: $Reducer<S, *>,
+  reducer: $Reducer<S>,
 };
 
 export default class ReducerBuilder<S: {}> {
-  reducer: $Reducer<S, *>;
+  reducer: $Reducer<S>;
   initialState: S;
   constructor({ initialState, reducer }: $ReducerBuilderConstructor<S>) {
     this.initialState = initialState;
@@ -48,7 +50,7 @@ export default class ReducerBuilder<S: {}> {
       reducer: newReducer,
     });
   }
-  toReducer(): $Reducer<S, *> {
+  toReducer(): $Reducer<S> {
     return this.reducer;
   }
 }

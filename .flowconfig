@@ -11,6 +11,8 @@
 .*/node_modules/redux-ship/examples/.*
 .*/node_modules/redux-ship/node_modules/.*
 .*/node_modules/redux-ship/src/__tests__/.*
+.*/node_modules/redux-ship-logger/node_modules/.*
+.*/node_modules/redux-ship-devtools/node_modules/.*
 
 # for this project
 ./**/gen
