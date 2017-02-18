@@ -53,8 +53,8 @@ const makeReducer =
     lens: Core.$Lens<State, StateSlice>,
   ): Core.$Reducer<State> => {
     const reducer = (state, { type, payload }) => {
-        const [, tail] = splitPath(type);
-        if (tail in rawCommits) {
+      const [, tail] = splitPath(type);
+      if (tail in rawCommits) {
         const modifySlice = rawCommits[tail](payload);
         return lens.edit(modifySlice)(state);
       }
