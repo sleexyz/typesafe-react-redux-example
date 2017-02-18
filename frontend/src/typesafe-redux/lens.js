@@ -1,6 +1,11 @@
 // @flow
 import * as Core from './core';
 
+export const identity: Core.$Lens<*, *> = {
+  view: (x) => x,
+  edit: (f) => f,
+};
+
 export const makePropertyLens = (key: $Subtype<string>): Core.$Lens<*, *> => ({
   view: (x) => x[key],
   edit: (f) => (x) => ({ ...x, [key]: f(x[key]) }),

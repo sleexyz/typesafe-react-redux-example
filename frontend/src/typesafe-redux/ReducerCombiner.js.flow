@@ -1,5 +1,4 @@
 // @flow
-
 import * as Core from './core';
 
 type ModelDefView<State> = {

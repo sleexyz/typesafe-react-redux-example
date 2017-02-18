@@ -69,7 +69,7 @@ const makeReducer =
 type $MakeModelDefInput<State, StateSlice, RawCommits> = {
   namespace: string,
   lens: Core.$Lens<State, StateSlice>,
-  initialState: $Shape<StateSlice>,
+  initialState: StateSlice,
   rawCommits: RawCommits,
 };
 

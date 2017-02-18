@@ -4,6 +4,7 @@ import makeEffects from './makeEffects';
 import makeModelDef from './makeModelDef';
 import ReducerCombiner from './ReducerCombiner';
 import {
+  identity,
   makePropertyLens,
   makeLenses,
 } from './lens';
@@ -24,6 +25,7 @@ export {
 };
 
 export {
+  identity,
   makePropertyLens,
   makeLenses,
 };
