@@ -4,7 +4,7 @@ const makeRun = (effects) => async function (effect) {
   if (effect.type in effects) {
     return effects[effect.type](effect.payload);
   }
-  return null;
+  return undefined;
 };
 
 const makeEffectActions = (effects) => {

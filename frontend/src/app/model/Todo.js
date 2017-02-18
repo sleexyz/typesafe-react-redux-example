@@ -1,7 +1,7 @@
 // @flow
+import * as Typesafe from 'typesafe-redux';
 
 // TODO: derive model schema from swagger
-import * as Typesafe from 'typesafe-redux';
 
 export const namespace = 'Todo';
 

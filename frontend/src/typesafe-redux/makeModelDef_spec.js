@@ -1,19 +1,60 @@
+// @flow
 /* eslint no-unused-expressions: 0, no-unused-vars: 0, max-len: 0 */
-import { assert } from 'chai';
+import { expect } from 'chai';
 import { createStore } from 'redux';
-import { makeStateDef } from './';
+import { makeModelDef } from './';
+import * as Core from './core';
+import * as Lens from './lens';
 
 /*
-   Flowtype tests
+   Note we only test type inference here.
+   We test reducer functionality in ReducerCombiner.
 */
 
-// TODO: Rewrite tests:
+// commit dict shape is enforced
+() => {
+  const { commits, modelDef } = makeModelDef({
+    namespace: 'test',
+    lens: (Lens.makePropertyLens('test'): Core.$Lens<{ modelDef1: string }, string>),
+    initialState: 'hello',
+    rawCommits: {
+      replaceWith: (x: string) => (state) => {
+        return x;
+      },
+      append: (x: string) => (state) => {
+        return state + x;
+      },
+      foo: () => (state) => {
+        return state;
+      },
+    },
+  });
+  // $ExpectError
+  commits.asdf();
+  // $ExpectError
+  commits.replaceWith();
+  // $ExpectError
+  commits.append(2);
+};
 
-// makeStateDef's action state is consistent with inital state, for simple types
-// makeStateDef's action state is consistent with initial state, for complex object types
-// makeStateDef expects state to be returned in an action
-// makeStateDef forbids nonexistent actions from being called
-// makeStateDef forbids improper action usage
-// Redux's store.getState enforces the right shape
-// Invalid Selectors are forbidden
-// Valid Selectors must typecheck and enforce proper usage
+describe('makeModelDef', () => {
+  it('creates valid, namespaced commits', () => {
+    const { commits, modelDef } = makeModelDef({
+      namespace: 'test',
+      lens: (Lens.makePropertyLens('test'): Core.$Lens<{ modelDef1: string }, string>),
+      initialState: 'hello',
+      rawCommits: {
+        replaceWith: (x: string) => () => {
+          return x;
+        },
+        append: (x: string) => (state) => {
+          return state + x;
+        },
+      },
+    });
+    expect(commits.replaceWith('hello')).to.deep.equal({
+      type: 'test/replaceWith',
+      payload: 'hello',
+    });
+  });
+});

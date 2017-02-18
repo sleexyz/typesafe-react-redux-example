@@ -11,7 +11,7 @@ type $RawCommits<StateSlice> = {
 
 type $ExtractCommit<StateSlice> =
   <Payload>(v: $RawCommit<StateSlice, Payload>)
-    => (payload?: Payload) => Core.$Commit<Payload>;
+    => (payload: Payload) => Core.$Commit<Payload>;
 
 type $CommitsMap<StateSlice, RawCommits> =
   $ObjMap<RawCommits, $ExtractCommit<StateSlice>>;
