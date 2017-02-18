@@ -5,7 +5,12 @@ type $Actions = {
   [key: string]: any => void => Ship.Ship<*, *, any, *>,
 };
 
-declare export default function makeActions<O: $Actions, Effect, Commit, State>(actions: O): {
+declare export default function makeActions<O: $Actions, Effect, Commit, State>(
+  params: {
+    namespace: string,
+    rawActions: O
+  },
+): {
   run: * => Ship.Ship<Effect, Commit, State, void>,
   actions: $ObjMap<O, (v: * => void => Ship.Ship<Effect, Commit, State, *>) => *>,
 }

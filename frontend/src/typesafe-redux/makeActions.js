@@ -1,23 +1,26 @@
-const makeRun = (actions) => function* (action) {
-  if (action.type in actions) {
-    yield* actions[action.type](action.payload)();
+const makeRun = (namespace, rawActions) => function* (action) {
+  const splitPoint = action.type.indexOf('/');
+  const expectedNamespace = action.type.substr(0, splitPoint);
+  if (expectedNamespace in rawActions) {
+    yield* rawActions[action.type](action.payload)();
   }
 };
 
-const makeActionMap = (actions) => {
+const makeActionMap = (namespace, rawActions) => {
   const actionMap = {};
-  const keys = Object.keys(actions);
+  const keys = Object.keys(rawActions);
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i];
     actionMap[key] = (payload) => ({
       payload,
-      type: key,
+      type: `${namespace}/${key}`,
     });
   }
   return actionMap;
 };
 
-export default (actions) => ({
-  run: makeRun(actions),
-  actions: makeActionMap(actions),
+export default ({ namespace, rawActions }) => ({
+  namespace,
+  run: makeRun(namespace, rawActions),
+  actions: makeActionMap(namespace, rawActions),
 });

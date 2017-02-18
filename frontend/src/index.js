@@ -12,6 +12,7 @@ import App from 'app/components/App';
 import * as Model from 'app/model';
 import * as Effects from 'app/effects';
 import * as Actions from 'app/actions';
+import * as TodoActions from 'app/actions/TodoActions';
 
 const store = createStore(Model.reducer, applyMiddleware(
   Ship.middleware(Effects.run, Actions.run),
@@ -20,7 +21,7 @@ const store = createStore(Model.reducer, applyMiddleware(
 
 const runActions = ShipDevTools.inspect(ShipLogger.logControl(Actions.run));
 
-Ship.run(Effects.run, store, runActions(Actions.actions.displayWelcome()));
+Ship.run(Effects.run, store, runActions(TodoActions.actions.displayWelcome()));
 
 const renderApp = () => {
   ReactDOM.render(

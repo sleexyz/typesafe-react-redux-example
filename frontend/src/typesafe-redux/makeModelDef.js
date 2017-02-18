@@ -51,15 +51,12 @@ const makeReducer =
     rawCommits: RawCommits,
     lens: Core.$Lens<State, StateSlice>,
   ): Core.$Reducer<State> => {
-    const keys = Object.keys(rawCommits);
     const reducer = (state, { type, payload }) => {
-      for (let i = 0; i < keys.length; i += 1) {
-        const key = keys[i];
-        const expectedType = `${namespace}/${keys[i]}`;
-        if (expectedType === type) {
-          const modifySlice = rawCommits[key](payload);
-          return lens.edit(modifySlice)(state);
-        }
+      const splitPoint = type.indexOf('/');
+      const expectedNamespace = type.substr(splitPoint + 1);
+      if (expectedNamespace in rawCommits) {
+        const modifySlice = rawCommits[expectedNamespace](payload);
+        return lens.edit(modifySlice)(state);
       }
       return state;
     };
