@@ -3,8 +3,8 @@
 
 ## Features
 - Static analysis + type safety with [Flow](https://flowtype.org/)
-- Full spectrum application via [Enzyme](https://github.com/airbnb/enzyme)
-- Controlled effect system via [redux-ship](https://github.com/clarus/redux-ship)
+- Full spectrum application testing via [Enzyme](https://github.com/airbnb/enzyme)
+- Controlled effect system via [Redux Ship](https://github.com/clarus/redux-ship)
 - Type-checked style variables via [styled-components](https://github.com/styled-components/styled-components)
 - **TODO** Derived type definitions from API specifications via [json-to-flow](https://github.com/STRML/json-to-flow)
 
@@ -75,8 +75,8 @@ We write types where they count, and allow the rest to be inferred. This means w
 
 ### Effect System
 
-#### [redux-ship](https://github.com/clarus/redux-ship)
-- redux-ship is a controlled effect system for JS, which plays well with the redux ecosystem.
+#### [Redux Ship](https://github.com/clarus/redux-ship)
+- Redux Ship is a controlled effect system for JS, which plays well with the redux ecosystem.
 - It gives us testable, typesafe asynchronous computations.
 
 ### Testing
