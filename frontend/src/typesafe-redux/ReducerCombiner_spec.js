@@ -6,9 +6,6 @@ import { makeModelDef, ReducerCombiner } from './';
 import * as Lens from './lens';
 import * as Core from './core';
 
-type State1 = { modelDef1: string };
-type State2 = { modelDef2: number };
-
 /*
    Flowtype tests
 */

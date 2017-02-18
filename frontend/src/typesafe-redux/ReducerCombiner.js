@@ -1,3 +1,5 @@
+import { splitPath } from './utils';
+
 export default class ReducerCombiner {
   reducer;
   initialState;
@@ -15,9 +17,8 @@ export default class ReducerCombiner {
     const { namespace, reducer, initializeState } = modelDefView;
     const initialState = initializeState(this.initialState);
     const newReducer = (state = initialState, action) => {
-      const splitPoint = action.type.indexOf('/');
-      const expectedNamespace = action.type.substr(0, splitPoint);
-      if (namespace === expectedNamespace) {
+      const [head] = splitPath(action.type);
+      if (namespace === head) {
         return reducer(state, action);
       }
       return this.reducer(state, action);

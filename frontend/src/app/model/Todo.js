@@ -1,8 +1,9 @@
 // @flow
-import * as Typesafe from 'typesafe-redux';
 
 // TODO: derive model schema from swagger
-const namespace = 'Todo';
+import * as Typesafe from 'typesafe-redux';
+
+export const namespace = 'Todo';
 
 export type Entry = {
   value: string,
@@ -21,7 +22,8 @@ const initialState: State = {
   ],
 };
 
-export const lens: Typesafe.$Lens<{ Todo: State}, State> = Typesafe.makePropertyLens('Todo');
+export const lens: Typesafe.$Lens<{ Todo: State}, State> =
+  Typesafe.makePropertyLens('Todo');
 
 const rawCommits = {
 

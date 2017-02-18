@@ -1,6 +1,7 @@
 // @flow
 
 import * as Core from './core';
+import { splitPath } from './utils';
 
 type $RawCommit<StateSlice, Payload> = Payload => StateSlice => StateSlice;
 
@@ -52,10 +53,9 @@ const makeReducer =
     lens: Core.$Lens<State, StateSlice>,
   ): Core.$Reducer<State> => {
     const reducer = (state, { type, payload }) => {
-      const splitPoint = type.indexOf('/');
-      const expectedNamespace = type.substr(splitPoint + 1);
-      if (expectedNamespace in rawCommits) {
-        const modifySlice = rawCommits[expectedNamespace](payload);
+        const [, tail] = splitPath(type);
+        if (tail in rawCommits) {
+        const modifySlice = rawCommits[tail](payload);
         return lens.edit(modifySlice)(state);
       }
       return state;

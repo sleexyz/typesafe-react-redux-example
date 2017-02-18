@@ -1,8 +1,9 @@
-const makeRun = (namespace, rawActions) => function* (action) {
-  const splitPoint = action.type.indexOf('/');
-  const expectedNamespace = action.type.substr(0, splitPoint);
-  if (expectedNamespace in rawActions) {
-    yield* rawActions[action.type](action.payload)();
+import { splitPath } from './utils';
+
+const makeRun = (namespace, rawActions) => function* ({ type, payload }) {
+  const [, tail] = splitPath(type);
+  if (tail in rawActions) {
+    yield* rawActions[tail](payload)();
   }
 };
 
