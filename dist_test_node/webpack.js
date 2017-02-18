@@ -10,6 +10,7 @@ const {
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: [
+    'babel-polyfill',
     path.resolve(sourcePaths.frontend, 'spec_node.js'),
   ],
   externals: [

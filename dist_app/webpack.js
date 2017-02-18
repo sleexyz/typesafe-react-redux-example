@@ -8,7 +8,9 @@ const {
 } = require('../build_utils');
 
 module.exports = {
+  devtool: 'cheap-module-source-map',
   entry: [
+    'babel-polyfill',
     path.resolve(sourcePaths.frontend, 'index.js'),
     'webpack-hot-middleware/client',
   ],

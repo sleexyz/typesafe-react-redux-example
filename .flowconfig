@@ -6,9 +6,16 @@
 .*/node_modules/styled-components/flow-typed/npm/express
 .*/node_modules/styled-components/dangerfile.js
 
+# for redux-ship
+.*/node_modules/redux-ship/_book/.*
+.*/node_modules/redux-ship/examples/.*
+.*/node_modules/redux-ship/node_modules/.*
+.*/node_modules/redux-ship/src/__tests__/.*
+.*/node_modules/redux-ship-logger/node_modules/.*
+.*/node_modules/redux-ship-devtools/node_modules/.*
+
 # for this project
 ./**/gen
-
 
 [include]
 
@@ -35,3 +42,6 @@ unsafe.enable_getters_and_setters=true
 module.system.node.resolve_dirname=frontend/src
 module.system.node.resolve_dirname=node_modules
 suppress_comment=\\(.\\|\n\\)*\\$ExpectError
+
+[version]
+0.39.0

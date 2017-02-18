@@ -1,0 +1,4 @@
+// @flow
+import type { Action } from 'app/redux';
+
+declare export var run: * => Action<void>;

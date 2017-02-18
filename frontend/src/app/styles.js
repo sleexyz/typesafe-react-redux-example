@@ -1,7 +1,7 @@
 // @flow
 
 /*
-   (parametrized) mixins are Capitalized.
+   (Parametrized) Mixins are Capitalized.
    dictionaries are lowercased.
 */
 

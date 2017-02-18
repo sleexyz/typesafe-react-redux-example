@@ -1,0 +1,14 @@
+// @flow
+import * as Core from './core';
+
+type ModelDefView<State> = {
+  namespace: string,
+  reducer: Core.$Reducer<State>,
+  initializeState: (State) => State,
+};
+
+declare export default class ReducerCombiner<S: {}> {
+  static init: void => ReducerCombiner<{}>;
+  use<T: {}>(modelDefView: ModelDefView<T>): ReducerCombiner<S & T>;
+  toReducer(): Core.$Reducer<S>;
+}

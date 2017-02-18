@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { actions } from 'app/state/Todo';
-import type { Entry } from 'app/state/Todo';
+import { commits } from 'app/model/Todo';
+import type { Entry } from 'app/model/Todo';
 import { Button, colors } from 'app/styles';
 
 export const Close = styled.button`
@@ -30,20 +30,20 @@ class TodoListEntry extends Component {
     const { dispatch } = this.props;
     const { index } = this.props;
     const value = e.target.value;
-    dispatch(actions.updateTodo({ index, value }));
-    dispatch(actions.updateTodo({ index, value }));
+    dispatch(commits.updateTodo({ index, value }));
+    dispatch(commits.updateTodo({ index, value }));
   }
 
   closeTodo = () => {
     const { dispatch } = this.props;
     const { index } = this.props;
-    dispatch(actions.removeTodo(index));
+    dispatch(commits.removeTodo(index));
   }
 
   makeNewRow = (e) => {
     const { dispatch } = this.props;
     if (e.key === 'Enter') {
-      dispatch(actions.createTodo());
+      dispatch(commits.createTodo());
     }
   }
 
