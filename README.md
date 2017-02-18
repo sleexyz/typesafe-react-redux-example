@@ -27,16 +27,16 @@ Redux-ship adds two more:
 We use the same map encoding to reduce boilerplate for defining these effects and actions.
 
 ### Type annotations where they count
-Flow's strength lies in its type inference. This allows us to have static guarantees about our code, without having to pollute our codebase with type annotations everywhere.
+Flow's strength lies in its type inference. This allows us to have static guarantees about our code without having to pollute our codebase with excessive type annotations.
 
 We write types where they count, and allow the rest to be inferred. This means writing:
 - types of the state, and any function that act on the state.
 - types of async actions
 - prop types
 
-## Libraries used
+## Libraries used:
 
-### Language
+<h3 align="center">Language</h3>
 
 #### [flow](https://flowtype.org/)
 - Flow is a type checker for JS.
@@ -44,23 +44,24 @@ We write types where they count, and allow the rest to be inferred. This means w
 #### [flow-typed](https://github.com/flowtype/flow-typed)
 - flow-typed is a repository of type definitions for 3rd party libraries.
 
-#### eslint
+#### [eslint](http://eslint.org)
 - eslint is a JS linter.
 - Our style is based on [eslint-config-airbnb](https://github.com/airbnb/javascript).
 
-#### Babel
+#### [Babel](https://babeljs.io)
 - Babel is a JS compiler.
-- Among standard ES6 features, we also use
+- Among standard ES6 features + JSX, we also use
   - [Class property initializers](https://babeljs.io/docs/plugins/transform-class-properties/), which solve the problem of binding React class methods
   - [Object rest spread](https://babeljs.io/docs/plugins/transform-object-rest-spread/)
 
-### Build
+<h3 align="center">Build</h3>
 
 #### [Webpack](https://webpack.js.org/)
 - Webpack is a highly configurable JS module bundler.
 - It provides a hot-module replacement API, which we use in development mode without the use of react-hot-loader.
 
-### View
+<h3 align="center">View</h3>
+
 #### [React](https://facebook.github.io/react/)
 - React is a UI framework.
 
@@ -68,18 +69,18 @@ We write types where they count, and allow the rest to be inferred. This means w
 - styled-components give us colocated, *per-component* styling via es6 tagged template literals
 - We also get type-checked styling variables by virtue of writing styles in JS + Flow.
 
-### State Management
+<h3 align="center">State Management</h3>
 
 #### [Redux](http://redux.js.org/)
 - Redux is a low-level API for building state management systems.
 
-### Effect System
+<h3 align="center">Effect System</h3>
 
 #### [Redux Ship](https://github.com/clarus/redux-ship)
 - Redux Ship is a controlled effect system for JS, which plays well with the redux ecosystem.
 - It gives us testable, typesafe asynchronous computations.
 
-### Testing
+<h3 align="center">Testing</h3>
 
 #### [mocha](https://mochajs.org/) 
 - Mocha is a test runner.
