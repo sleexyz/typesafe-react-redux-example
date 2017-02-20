@@ -6,7 +6,7 @@
 - Full spectrum application testing via [Enzyme](https://github.com/airbnb/enzyme)
 - Controlled effect system via [Redux Ship](https://github.com/clarus/redux-ship)
 - Type-checked style variables via [styled-components](https://github.com/styled-components/styled-components)
-- **TODO** Derived type definitions from API specifications via [json-to-flow](https://github.com/STRML/json-to-flow)
+- **TODO** Derived types of data schemata + API querying actions from API specifications
 
 ## Main ideas
 
